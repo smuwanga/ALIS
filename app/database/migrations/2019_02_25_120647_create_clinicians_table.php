@@ -21,6 +21,7 @@ class CreateCliniciansTable extends Migration {
 			$table->string('email');
 			$table->timestamps();
 		});
+		DB::update('ALTER TABLE clinicians ADD active INT(3) NOT NULL DEFAULT 0 AFTER created_at');
 	}
 
 

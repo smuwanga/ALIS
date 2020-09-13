@@ -34,7 +34,16 @@
 
 
 
-
+				<!-- <div class="form-group">
+					{{ Form::label('ulin', trans('messages.ulin'), array('class' => 'required')) }}
+					@if($ulinFormat == 'Manual')
+					{{ Form::text('ulin', Input::old('ulin'),array('class' => 'form-control')) }}
+					@else
+					{{ Form::text('ulin', '',
+						array('class' => 'form-control', 'readonly' =>'true', 'placeholder' => 'Auto generated upon succesfull save!')) }}
+					@endif
+				</div> -->
+				
 				<div class="form-group">
 					{{ Form::label('infant_name', 'Infant Name', array('class' =>'col-sm-2 required ')) }}
 					{{ Form::text('infant_name', Input::old('infant_name'), array('class' => 'form-control col-sm-4')) }}
@@ -70,6 +79,19 @@
 
 			</div>
 
+			<div class="form-group">
+				{{ Form::label('given_contrimazole', 'Given Contrimoxazole', array('class' =>'col-sm-2')) }}
+				<div class="radio-inline">{{ Form::radio('given_contrimazole', 'Yes', false) }} <span class="input-tag">Yes</span></div>
+				<div class="radio-inline">{{ Form::radio("given_contrimazole", 'No', false) }} <span class="input-tag">No</span></div>
+			</div>
+
+			<div class="form-group">
+				{{ Form::label('delivered_at', 'Delivered at Health Facility:', array('class' =>'col-sm-2')) }}
+				<div class="radio-inline">{{ Form::radio('delivered_at', 'Yes', false) }} <span class="input-tag">Yes</span></div>
+				<div class="radio-inline">{{ Form::radio("delivered_at", 'No', false) }} <span class="input-tag">No</span></div>
+				<div class="radio-inline">{{ Form::radio("delivered_at", 'No', false) }} <span class="input-tag">Unknown</span></div>
+			</div>
+
 			<span>Entry Point <i>(Please select one)</i></span>
 			<br>
 			<br>
@@ -77,12 +99,13 @@
 			<div class="form-group">
 				{{ Form::label('entry_point', 'Infant PMTCT Codes: (Tick) :',array('class' =>'col-sm-2 required ')) }}
 				<div class="radio-inline">{{ Form::radio("entry_point", 'Nutrition', false) }} <span class="input-tag">Nutrition</span></div>
-				<div class="radio-inline">{{ Form::radio("entry_point", 'Pediatric Inpatient', false) }} <span class="input-tag">Pediatric Inpatient</span></div>
-				<div class="radio-inline">{{ Form::radio("entry_point", 'MBCP/eMTCT', false) }} <span class="input-tag">MBCP/eMTCT</span></div>
+				<div class="radio-inline">{{ Form::radio("entry_point", 'Childrens Ward', false) }} <span class="input-tag">Children's Ward</span></div>
+				<div class="radio-inline">{{ Form::radio("entry_point", 'PMTCT', false) }} <span class="input-tag">PMTCT</span></div>
 				<div class="radio-inline">{{ Form::radio("entry_point", 'Outpatient', false) }} <span class="input-tag">Outpatient</span></div>
 				<div class="radio-inline">{{ Form::radio("entry_point", 'Young Child Clinic', false) }} <span class="input-tag">Young Child Clinic</span></div>
 				<div class="radio-inline">{{ Form::radio("entry_point", 'EPI', false) }} <span class="input-tag">EPI</span></div>
-				<div class="radio-inline">{{ Form::radio("entry_point", 'Maternity', false) }} <span class="input-tag">Maternity</span></div>
+				<div class="radio-inline">{{ Form::radio("entry_point", 'MBCP', false) }} <span class="input-tag">MBCP</span></div>
+				<div class="radio-inline">{{ Form::radio("entry_point", 'Other', false) }} <span class="input-tag">Other</span></div>
 			</div>
 
 			<div class="form-group">
@@ -96,26 +119,46 @@
 			</div>
 
 			<div class="form-group">
+				<br>
+				<span>
+				Infant Feeding Status at Test (Tick) :
+				</span>
+				<br>
+				<br>
+				<div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'Exclusive Breast Feeding', false) }} <span class="input-tag"><b>EBF</b> Exclusive Breast Feeding</span></div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'Replacement Feeding', false) }} <span class="input-tag"><b>RF</b> Replacement Feeding(never breastfed) </span></div>
+				</div>
+				<div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'Mixed Feeding', false) }} <span class="input-tag"><b>M</b> Mixed Feeding (below 6 months)</span></div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'Complimentary Feeding', false) }} <span class="input-tag"><b>C</b> Complimentary Feeding (above 6 months)</span></div>
+				</div>
+				<div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'Wean from breastfeeding', false) }} <span class="input-tag"><b>W</b> Wean from breastfeeding</span></div>
+				<div class="radio-inline">{{ Form::radio("feeding_status", 'No longer breastfeeding', false) }} <span class="input-tag"><b>NLB</b> No longer breastfeeding</span></div>
+				</div>
+			</div>
 
-				{{ Form::label('mother_name', 'Mothers Name', array('class' =>'col-sm-2 ')) }}
-				{{ Form::text('mother_name', Input::old('mother_name'), array('class' => 'form-control col-sm-4')) }}
-<!--
-				{{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class' =>'col-sm-2 ')) }}
-				{{ Form::select('mother_hiv_status', array_merge(array(null => 'select.....'), $hiv_status), Input::old('mother_hiv_status'), array('class' => 'form-control')) }} -->
-				<!-- {{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class'=>'control-label')) }}
-				{{ Form::select('mother_hiv_status', array_merge(array(null => 'Select.....'), $hiv_status), Input::old('mother_hiv_status'), array('class' => 'form-control', 'id' =>'mother_hiv_status')) }}
-				@if ($errors->has('mother_hiv_status'))
-						<span class="text-danger">
-								<strong>{{ $errors->first('mother_hiv_status') }}</strong>
-						</span>
-				@endif -->
+			<div class="form-group">
+				<br>
+				<span>
+				Mother Information :
+				</span>
+				<br>
+				<br>
 
-				{{ Form::label('mother_hiv_status', 'Mothers HIV Status', array('class' =>'col-sm-2')) }}
-				<div class="radio-inline">{{ Form::radio("mother_hiv_status", 'Positive', false) }} <span class="input-tag">Positive</span></div>
-				<div class="radio-inline">{{ Form::radio('mother_hiv_status', 'Negative', false) }} <span class="input-tag">Negative</span></div>
-				<div class="radio-inline">{{ Form::radio("mother_hiv_status", 'Unknown', false) }} <span class="input-tag">Unknown</span></div>
+				{{ Form::label('mother_name', 'Mothers HTS No', array('class' =>'col-sm-2 ')) }}
+				{{ Form::text('mother_name', Input::old('mother_name'), array('class' => 'form-control col-sm-2')) }}
+
+
+				{{ Form::label('mother_hiv_status', 'ART NO', array('class' =>'col-sm-2 ')) }}
+				{{ Form::text('mother_hiv_status', Input::old('mother_hiv_status'), array('class' => 'form-control col-sm-2')) }}
+
+				{{ Form::label('nin', 'NIN', array('class' =>'col-sm-2 ')) }}
+				{{ Form::text('nin', Input::old('nin'), array('class' => 'form-control col-sm-2')) }}
 
 			</div>
+			<br>
 
 
 		<span>For known HIV Exposed infants, information to enter on this Request Form should be picked from EI register. <br> For all other infants,
@@ -188,9 +231,10 @@
 				<br>
 				<div class="form-group">
 
-					{{ Form::label('infant_pmtctarv', 'Infant PMTCTARV Status:',array('class' =>'col-sm-2 required ')) }}
+					{{ Form::label('infant_pmtctarv', 'Infant PMTCTARV Status:',array('class' =>'col-sm-2')) }}
 					<div class="radio-inline">{{ Form::radio("infant_pmtctarv", 'Daily NVP from birth to 6 weeks',false) }} <span class="input-tag">Daily NVP from birth to 6 weeks</span></div>
 					<div class="radio-inline">{{ Form::radio("infant_pmtctarv", 'NVP for 12 weeks for high risk infants', false) }} <span class="input-tag">NVP for 12 weeks for high risk infants</span></div>
+					<div class="radio-inline">{{ Form::radio("infant_pmtctarv", 'AZT/3TC/NVP', false) }} <span class="input-tag">AZT/3TC/NVP</span></div>
 					<div class="radio-inline">{{ Form::radio("infant_pmtctarv", 'No ARVs taken at birth', false) }} <span class="input-tag">No ARVs taken at birth</span></div>
 					<div class="radio-inline">{{ Form::radio("infant_pmtctarv", 'UNKNOWN', false) }} <span class="input-tag">unknown</span></div>
 					<br>
@@ -203,7 +247,7 @@
 				<div class="panel-body">
 
 					<div class="form-group">
-						{{ Form::label('sample_id', 'Sample ID:',array('class' =>'col-sm-2 required ')) }}
+						{{ Form::label('sample_id', 'Sample ID:',array('class' =>'col-sm-2')) }}
 						{{ Form::text('sample_id', Input::old('sample_id'), array('class' => 'form-control col-sm-4')) }}
 
 						{{ Form::label('collection_date', 'Sample Collection Date:', array('class' =>'col-sm-2 ')) }}
@@ -215,7 +259,7 @@
 
 						{{ Form::label('clinician_phone', 'Mobile Number:', array('class' =>'col-sm-2 ')) }}
 						{{ Form::text('clinician_phone', Auth::user()->phone_contact, array('class' => 'form-control col-sm-4')) }}
-						<!-- {{ Form::text('collection_date', Input::old('collection_date'), array('class' => 'form-control standard-datepicker col-sm-4', 'placeholder' => 'DD/ MM /YYYY')) }} -->
+						
 					</div>
 					<br>
 
