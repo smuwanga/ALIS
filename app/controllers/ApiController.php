@@ -152,8 +152,8 @@ class ApiController extends \BaseController
             ->leftjoin('measure_types', function ($join) {
                 $join->on('measures.measure_type_id', '=', 'measure_types.id');
             })
-            ->select('unhls_test_results.id AS unhlsTestResultsId', 'unhls_test_results.test_id AS unhlsTestResultsTestId',
-                'unhls_test_results.measure_id AS unhlsTestResultsMeasureId', 'unhls_test_results.result AS unhlsTestResultsResult',
+            ->select('unhls_test_results.id AS unhlsTestsResultsId', 'unhls_test_results.test_id AS unhlsTestsResultsTestId',
+                'unhls_test_results.measure_id AS unhlsTestsResultsMeasureId', 'unhls_test_results.result AS unhlsTestsResultsResult',
                 'unhls_test_results.time_entered AS timeEntered', 'unhls_test_results.sample_id AS sampleId', 'unhls_test_results.revised_result AS revisedResult',
                 'unhls_test_results.revised_by AS revisedBy', 'unhls_test_results.revised_by2 AS revisedBy2', 'unhls_test_results.time_revised AS timeRevised',
                 'measures.id AS measuresId', 'measures.measure_type_id AS measuresMeasureTypeId', 'measures.name AS measuresName',
@@ -200,10 +200,10 @@ class ApiController extends \BaseController
                 'asrr.id AS analyticSpecimenRejectionReasonsId',
                 'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
                 'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
-                'asrr.reason_id AS analyticSpecimenRejectionReasonsReasonId',
-                'asrr.created_at AS analyticSpecimenRejectionReasonsCreatedAt',
-                'asrr.updated_at AS analyticSpecimenRejectionReasonsUpdatedAt',
-                'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
+                'asrr.reason_id AS analyticSpecimenRejectionReasonsRejectionIdReasonId',
+                'asrr.created_at AS analyticSpecimenRejectionReasonsRejectionIdCreatedAt',
+                'asrr.updated_at AS analyticSpecimenRejectionReasonsRejectionIdUpdatedAt',
+                'asrr.deleted_at AS analyticSpecimenRejectionReasonsRejectionIdDeletedAt',
                 'rr.id AS rejectionReasonsId',
                 'rr.reason AS rejectionReasonsReason')
             ->orderBy('asrr.id', 'asc')
@@ -293,7 +293,7 @@ class ApiController extends \BaseController
             ->select('up.id AS unhlsPatientsId', 'up.patient_number AS patientNumber', 'up.ulin AS ulin',
                 'up.nin AS nin', 'up.name AS name', 'up.dob as dob', 'up.age AS age', 'up.gender AS gender', 'up.nationality AS nationality',
                 'up.email AS email', 'up.address AS address', 'up.village_residence AS villageResidence', 'up.district_residence AS districtResidence',
-                'up.village_workplace AS villageWorkplace', 'up.phone_number AS phoneNumber', 'up.occupation AS occupation',
+                'up.village_workplace AS villageWorkplace', 'up.district_workplace AS districtWorkplace', 'up.phone_number AS phoneNumber', 'up.occupation AS occupation',
                 'up.external_patient_number AS externalPatientNumber', 'up.created_by AS unhlsPatientsCreatedBy',
                 'up.deleted_at AS unhlsPatientsDeletedAt', 'up.created_at AS unhlsPatientsCreatedAt',
                 'up.updated_at AS unhlsPatientsUpdatedAt', 'up.is_micro AS isMicro',
@@ -306,9 +306,9 @@ class ApiController extends \BaseController
                 'mp.updated_at AS microPatientsDetailsUpdatedAt',
                 'ud.id AS unhlsDistrictsId', 'ud.name AS unhlsDistrictsName', 'ud.created_at AS unhlsDistrictsCreatedAt',
                 'ud.updated_at AS unhlsDistrictsUpdatedAt',
-                'uv.id AS unhlsVisitsid', 'uv.patient_id AS unhlsVisitspatientId', 'uv.visit_type AS visitType',
+                'uv.id AS unhlsVisitsId', 'uv.patient_id AS unhlsVisitsPatientId', 'uv.visit_type AS visitType',
                 'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
-                'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitscreatedAt',
+                'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitsCreatedAt',
                 'uv.updated_at AS unhlsVisitsUpdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
                 'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
                 'uv.on_antibiotics AS onAntibiotics',
@@ -379,9 +379,9 @@ class ApiController extends \BaseController
 
         $results = DB::table('poc_results AS pr')
             ->where('patient_id', '=', $patient_id)
-            ->select('pr.id AS pocresultId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
+            ->select('pr.id AS pocResultsId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
                 'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
-                'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
+                'pr.test_time AS testTime', 'pr.equipment_used AS equipmentUsed', 'pr.created_at AS createdAt',
                 'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
             ->orderBy('pr.id', 'asc')
             ->get();
@@ -394,7 +394,7 @@ class ApiController extends \BaseController
     public function pocTable()
     {
         $results = DB::table('poc_tables AS pt')
-            ->select('id AS poc_id', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
+            ->select('id AS pocId', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
                 'provisional_diagnosis AS provisionalDiagnosis', 'caretaker_number AS caretakerNumber', 'entry_point AS entryPoint', 'mother_name AS motherName',
                 'infant_name AS infantName', 'breastfeeding_status AS breastfeedingStatus', 'mother_hiv_status AS motherHivStatus', 'collection_date AS collectionDate',
                 'pcr_level AS pcrLevel', 'created_by AS createdBy', 'pmtct_antenatal AS pmtctAntenatal', 'pmtct_delivery AS pmtctDelivery', 'pmtct_postnatal AS pmtctPostnatal',
@@ -416,7 +416,7 @@ class ApiController extends \BaseController
                 'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation',
                 'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
                 'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
-                'U.phone_contact AS phoneContact')
+                'u.phone_contact AS phoneContact')
             ->orderBy('u.id', 'asc')
             ->get();
 
@@ -426,7 +426,7 @@ class ApiController extends \BaseController
     public function clinicians()
     {
         $results = DB::table('clinicians AS c')
-            ->select('c.id AS clinicians_id', 'c.name AS name', 'c.cadre AS cadre',
+            ->select('c.id AS cliniciansId', 'c.name AS name', 'c.cadre AS cadre',
                 'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
                 'c.active AS active','c.updated_at AS updatedAt')
             ->orderBy('c.id', 'asc')
@@ -511,9 +511,9 @@ class ApiController extends \BaseController
                 'tc.created_at AS testCategoriesCreatedAt', 'tc.updated_at AS testCategoriesUpdatedAt',
                 'ts.id AS testStatusesId', 'ts.name AS testStatusesName', 'ts.test_phase_id AS testStatusesTestPhaseId',
                 'tp.id AS testPhasesId', 'tp.name AS testPhasesName',
-                'sp.id AS specimensId', 'sp.specimen_type_id AS specimentestSpecimenTypeId', 'sp.specimen_status_id AS specimenStatusId',
-                'sp.accepted_by AS specimentestAcceptedBy', 'sp.referral_id AS referralId', 'sp.time_collected AS specimentestTimeCollected',
-                'sp.time_accepted AS specimentestTimeAccepted',
+                'sp.id AS specimensId', 'sp.specimen_type_id AS specimensSpecimenTypeId', 'sp.specimen_status_id AS specimenStatusId',
+                'sp.accepted_by AS specimentestAcceptedBy', 'sp.referral_id AS referralId', 'sp.time_collected AS specimensTimeCollected',
+                'sp.time_accepted AS specimensTimeAccepted',
                 'spt.id AS specimenTypesId', 'spt.name AS specimenTypesName', 'spt.description AS specimenTypesDescription',
                 'spt.deleted_at AS specimenTypesDeletedAt', 'spt.created_at AS specimenTypesCreatedAt', 'spt.updated_at AS specimenTypesUpdatedAt',
                 'sps.id AS specimenStatusesId', 'sps.name AS specimenStatusesName')
@@ -543,12 +543,11 @@ class ApiController extends \BaseController
         $visits2 = [];
         $test_results = [];
         foreach ($visits as $visit) {
-            $visit['specimentestList'] = [];
-
+            $visit['Specimentest'] = [];
             $visit_tests = [];
-            $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsid'])), true);
+            $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsId'])), true);
 
-            $visit['specimentestList'] = $visit_tests;
+            $visit['Specimentest'] = $visit_tests;
 
             $visits2[] = $visit;
 
@@ -557,7 +556,7 @@ class ApiController extends \BaseController
 
         $visit3 = [];
         foreach ($visits2 as $patient_visit) {
-            if (!empty($patient_visit['specimentestList'])) {
+            if (!empty($patient_visit['Specimentest'])) {
                 $updated_patient_visit = [];
                 $updated_tests = [];
                 $test_results = [];
@@ -565,7 +564,7 @@ class ApiController extends \BaseController
                 $test_rejects = [];
                 $test_referrals = [];
 
-                foreach ($patient_visit['specimentestList'] as $spec_test) {
+                foreach ($patient_visit['Specimentest'] as $spec_test) {
                     // Appending test results to specimentest
                     $spec_test['testresultList'] = [];
                     $test_results = json_decode(json_encode($this->unhlsResults($spec_test['unhlsTestsId'])), true);
@@ -584,14 +583,14 @@ class ApiController extends \BaseController
                     $spec_test['specimenrejectList'] = $test_rejects;
 
                     // Appending test referrals to specimentest
-                    $spec_test['test_referrals'] = [];
+                    $spec_test['referralList'] = [];
                     $test_referrals = json_decode(json_encode($this->referrals($spec_test['unhlsTestsId'])), true);
-                    $spec_test['test_referrals'] = $test_referrals;
+                    $spec_test['referralList'] = $test_referrals;
 
                     $updated_tests[] = $spec_test;
                 }
 
-                $patient_visit['specimentestList'] = $updated_tests;
+                $patient_visit['Specimentest'] = $updated_tests;
                 $visit3[] = $patient_visit;
 //                dd(json_encode($patient_visit));
             }
@@ -602,11 +601,11 @@ class ApiController extends \BaseController
 
         $visit4 = [];
         foreach ($visit3 as $visit) {
-//            dd(json_encode($visit['specimentestList']));
+//            dd(json_encode($visit['Specimentest']));
             $result_ranges = [];
             $updated_tests = [];
 
-            foreach ($visit['specimentestList'] as $visit_test) {
+            foreach ($visit['Specimentest'] as $visit_test) {
                 $updated_result_list = [];
                 $ranges_list = [];
                 foreach ($visit_test['testresultList'] as $test_result) {
@@ -642,7 +641,7 @@ class ApiController extends \BaseController
 //                dd(json_encode($visit_test));
             }
 //                dd(json_encode($updated_tests));
-            $visit['specimentestList'] = $updated_tests;
+            $visit['Specimentest'] = $updated_tests;
 //            dd(json_encode($visit));
 
 
@@ -653,29 +652,29 @@ class ApiController extends \BaseController
 
 //        dd(json_encode($visit4));
 
-        $all_visits['patientvisit'] = $visit4;
+        $all_visits['Patientvisit'] = $visit4;
 
 
         // Add POC table
-        $all_visits['poc'] = json_decode(json_encode($this->pocTable()), true);
+        $all_visits['Poc'] = json_decode(json_encode($this->pocTable()), true);
 
         // Add poc_result to each POC
         $poc_visits = [];
         $poc_results = [];
-        foreach ($all_visits['poc'] as $poc) {
-            $poc['poc_results'] = [];
-            $poc['poc_results'] = json_decode(json_encode($this->pocResults($poc['poc_id'])), true);
+        foreach ($all_visits['Poc'] as $poc) {
+            $poc['pocresultList'] = [];
+            $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
 
             $poc_results[] = $poc;
 
         }
 
-        $all_visits['poc'] = $poc_results;
+        $all_visits['Poc'] = $poc_results;
 
         // Add users
-        $all_visits['users'] = json_decode(json_encode($this->users()));
+        $all_visits['Facilityusers'] = json_decode(json_encode($this->users()));
 
-        $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
+        $all_visits['Clinician'] = json_decode(json_encode($this->clinicians()), true);
 
 //        $paginator = Paginator::make($all_visits, count($all_visits), $perPage = 4);
 //
