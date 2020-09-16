@@ -1218,7 +1218,7 @@ Route::get('/users', 'ApiController@users');
 
 Route::get('/referrals', 'ApiController@referrals');
 
-Route::get('clinicians', 'ApiController@clinician');
+Route::get('clinician', 'ApiController@clinicians');
 
 Route::post('/recent_visits', 'ApiController@recentVisits');
 
