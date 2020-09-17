@@ -543,11 +543,11 @@ class ApiController extends \BaseController
         $visits2 = [];
         $test_results = [];
         foreach ($visits as $visit) {
-            $visit['Specimentest'] = [];
+            $visit['specimentestList'] = [];
             $visit_tests = [];
             $visit_tests = json_decode(json_encode($this->specimenTest($visit['unhlsVisitsId'])), true);
 
-            $visit['Specimentest'] = $visit_tests;
+            $visit['specimentestList'] = $visit_tests;
 
             $visits2[] = $visit;
 
@@ -556,7 +556,7 @@ class ApiController extends \BaseController
 
         $visit3 = [];
         foreach ($visits2 as $patient_visit) {
-            if (!empty($patient_visit['Specimentest'])) {
+            if (!empty($patient_visit['specimentestList'])) {
                 $updated_patient_visit = [];
                 $updated_tests = [];
                 $test_results = [];
@@ -564,7 +564,7 @@ class ApiController extends \BaseController
                 $test_rejects = [];
                 $test_referrals = [];
 
-                foreach ($patient_visit['Specimentest'] as $spec_test) {
+                foreach ($patient_visit['specimentestList'] as $spec_test) {
                     // Appending test results to specimentest
                     $spec_test['testresultList'] = [];
                     $test_results = json_decode(json_encode($this->unhlsResults($spec_test['unhlsTestsId'])), true);
