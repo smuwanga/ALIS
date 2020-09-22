@@ -379,7 +379,7 @@ class ApiController extends \BaseController
             ->where('patient_id', '=', $patient_id)
             ->select('pr.id AS pocResultsId', 'pr.patient_id AS patientId', 'pr.results AS results', 'pr.test_date AS testDate',
                 'pr.tested_by AS testedBy', 'pr.dispatched_by AS dispatchedBy', 'pr.dispatched_date AS dispatchedDate',
-                'pr.test_time AS testTime', 'pr.equipment_used AS experimentUsed', 'pr.created_at AS createdAt',
+                'pr.test_time AS testTime', 'pr.equipment_used AS equipmentUsed', 'pr.created_at AS createdAt',
                 'pr.updated_at AS updatedAt', 'pr.error_code AS errorCode')
             ->orderBy('pr.id', 'asc')
             ->get();
