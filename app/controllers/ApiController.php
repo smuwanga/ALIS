@@ -363,7 +363,7 @@ class ApiController extends \BaseController
                 'uv.on_antibiotics AS onAntibiotics',
                 'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
                 'wt.id AS wardTypeId', 'wt.name AS wardTypeName')
-            ->orderBy('unhlsVisitsid', 'asc')
+            ->orderBy('unhlsVisitsId', 'asc')
             ->get();
 
 //        return Response::json($results, 200);
@@ -414,7 +414,7 @@ class ApiController extends \BaseController
                 'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation',
                 'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
                 'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
-                'U.phone_contact AS phoneContact')
+                'u.phone_contact AS phoneContact')
             ->orderBy('u.id', 'asc')
             ->get();
 
@@ -582,9 +582,9 @@ class ApiController extends \BaseController
                     $spec_test['specimenrejectList'] = $test_rejects;
 
                     // Appending test referrals to specimentest
-                    $spec_test['test_referrals'] = [];
+                    $spec_test['referralList'] = [];
                     $test_referrals = json_decode(json_encode($this->referrals($spec_test['unhlsTestsId'])), true);
-                    $spec_test['test_referrals'] = $test_referrals;
+                    $spec_test['referralList'] = $test_referrals;
 
                     $updated_tests[] = $spec_test;
                 }
