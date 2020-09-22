@@ -53,6 +53,11 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@loginAction"
     ));
 
+    Route::any('/settings', array(
+        "as" => "facility.settings",
+        "uses" => "UserController@configureFacilitySettings"
+    ));
+
 });
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
