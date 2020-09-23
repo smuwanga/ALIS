@@ -684,6 +684,105 @@ class ApiController extends \BaseController
     }
 
 
+    public function getVisitDetails($visit_id)
+    {
+        $results = DB::table('unhls_visits AS uv')
+            ->where('uv.id', '=', $visit_id)
+            ->leftJoin('unhls_patients AS up', function ($join){
+                $join->on('up.id', '=', 'uv.patient_id');
+            })
+            ->leftJoin('micro_patients_details AS mp', function ($join) {
+                $join->on('mp.patient_id', '=', 'up.id');
+            })
+            ->leftJoin('unhls_districts AS ud', function ($join) {
+                $join->on('up.district_residence', '=', 'ud.id');
+            })
+            ->leftJoin('wards AS w', function ($join) {
+                $join->on('uv.ward_id', '=', 'w.id');
+            })
+            ->leftJoin('ward_type AS wt', function ($join) {
+                $join->on('w.ward_type_id', '=', 'wt.id');
+            })
+            ->select('up.id AS unhlsPatientsId', 'up.patient_number AS patientNumber', 'up.ulin AS ulin',
+                'up.nin AS nin', 'up.name AS name', 'up.dob as dob', 'up.age AS age', 'up.gender AS gender', 'up.nationality AS nationality',
+                'up.email AS email', 'up.address AS address', 'up.village_residence AS villageResidence', 'up.district_residence AS districtResidence',
+                'up.village_workplace AS villageWorkplace', 'up.phone_number AS phoneNumber', 'up.occupation AS occupation',
+                'up.external_patient_number AS externalPatientNumber', 'up.created_by AS unhlsPatientsCreatedBy',
+                'up.deleted_at AS unhlsPatientsDeletedAt', 'up.created_at AS unhlsPatientsCreatedAt',
+                'up.updated_at AS unhlsPatientsUpdatedAt', 'up.is_micro AS isMicro',
+                'mp.id AS microPatientsDetailsId', 'mp.patient_id AS patientId', 'mp.sub_county_residence AS subCountyResidence',
+                'mp.sub_county_workplace AS subCountyWorkplace', 'mp.name_next_kin AS nameNextKin', 'mp.contact_next_kin AS contactNextKin',
+                'mp.residence_next_kin AS residenceNextKin', 'mp.admission_date AS admissionDate', 'mp.transfered AS transfered',
+                'mp.facility_transfered AS facilityTransfered', 'mp.clinical_notes AS clinicalNotes',
+                'mp.days_on_antibiotic AS daysOnAntibiotic', 'mp.requested_by AS requestedBy', 'mp.clinician_contact AS clinicianContact',
+                'mp.deleted_at AS microPatientsDetailsDeletedAt', 'mp.created_at AS microPatientsDetailsCreatedAt',
+                'mp.updated_at AS microPatientsDetailsUpdatedAt',
+                'ud.id AS unhlsDistrictsId', 'ud.name AS unhlsDistrictsName', 'ud.created_at AS unhlsDistrictsCreatedAt',
+                'ud.updated_at AS unhlsDistrictsUpdatedAt',
+                'uv.id AS unhlsVisitsId', 'uv.patient_id AS unhlsVisitsPatientId', 'uv.visit_type AS visitType',
+                'uv.visit_number AS visitNumber', 'uv.visit_lab_number AS visitLabNumber', 'uv.facility_id AS facilityId',
+                'uv.facility_lab_number AS facilityLabNumber', 'uv.created_at AS unhlsVisitsCreatedAt',
+                'uv.updated_at AS unhlsVisitsUpdatedAt', 'uv.ward_id AS wardId', 'uv.bed_no AS bedNo',
+                'uv.visit_status_id AS visitStatusId', 'uv.hospitalized AS hospitalized', 'uv.urgency AS urgency',
+                'uv.on_antibiotics AS onAntibiotics',
+                'w.id AS wardsId', 'w.name AS wardsName', 'w.description AS wardsDescription', 'w.ward_type_id AS wardsWardTypeId',
+                'wt.id AS wardTypeId', 'wt.name AS wardTypeName')
+            ->orderBy('uv.id', 'asc')
+            ->get();
+
+        return $results;
+    }
+
+
+    public function chunkVisits($visit_id)
+    {
+        $results = UnhlsVisit::where('id', '>', $visit_id)
+            ->limit(5)
+            ->select('id')
+            ->get();
+
+        return json_decode(json_encode($results), true);
+    }
+
+
+    public function getChunkedVisits($id)
+    {
+        $visit_ids = $this->chunkVisits($id);
+        $vis = [];
+
+        foreach ($visit_ids as $id){
+            $result = [];
+            $visits = json_decode(json_encode($id), true);
+            $result = json_decode($this->getPatientVisits($id)->getContent(), true);
+            $vis['patientvisit'][] = $result;
+        }
+
+        // Add POC table
+        $vis['poc'] = json_decode(json_encode($this->pocTable()), true);
+
+        // Add poc_result to each POC
+        $poc_visits = [];
+        $poc_results = [];
+        foreach ($vis['poc'] as $poc) {
+            $poc['pocresultList'] = [];
+            $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
+
+            $poc_results[] = $poc;
+
+        }
+
+        $vis['poc'] = $poc_results;
+
+        // Add users
+        $vis['users'] = json_decode(json_encode($this->users()));
+
+        // Add clinicians
+        $vis['clinicians'] = json_decode(json_encode($this->clinicians()), true);
+
+        return $vis;
+    }
+
+
     public function facilitySettings()
     {
         $settings = file_get_contents('config.properties');
