@@ -528,10 +528,10 @@ class ApiController extends \BaseController
 
     public function getPatientVisits($visit_id = null)
     {
-        $visit_id = [];
         $specimens = [];
-//            $visits = !isset($visit_id) ? $this->unhlsVisits() : $this->updateunhlsVisits($visit_id);
-        $visits = $this->unhlsVisits();
+//        $visits = $this->unhlsVisits();
+        $visits = $this->getVisitDetails($visit_id);
+
         $visits = json_decode(json_encode($visits), true);
 
         // Add Specimentest key to each visit
@@ -655,25 +655,25 @@ class ApiController extends \BaseController
 
 
         // Add POC table
-        $all_visits['poc'] = json_decode(json_encode($this->pocTable()), true);
-
-        // Add poc_result to each POC
-        $poc_visits = [];
-        $poc_results = [];
-        foreach ($all_visits['poc'] as $poc) {
-            $poc['pocresultList'] = [];
-            $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
-
-            $poc_results[] = $poc;
-
-        }
-
-        $all_visits['poc'] = $poc_results;
-
-        // Add users
-        $all_visits['users'] = json_decode(json_encode($this->users()));
-
-        $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
+//        $all_visits['poc'] = json_decode(json_encode($this->pocTable()), true);
+//
+//        // Add poc_result to each POC
+//        $poc_visits = [];
+//        $poc_results = [];
+//        foreach ($all_visits['poc'] as $poc) {
+//            $poc['pocresultList'] = [];
+//            $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
+//
+//            $poc_results[] = $poc;
+//
+//        }
+//
+//        $all_visits['poc'] = $poc_results;
+//
+//        // Add users
+//        $all_visits['users'] = json_decode(json_encode($this->users()));
+//
+//        $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
 
         $all_visits = str_replace("0000-00-00 00:00:00",null, json_encode($all_visits),$i);
         $all_visits = str_replace("0000-00-00",null, $all_visits,$i);
