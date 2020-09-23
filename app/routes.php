@@ -1229,8 +1229,6 @@ Route::post('/recent_visits', 'ApiController@recentVisits');
 
 Route::get('/update', 'ApiController@updateunhlsVisits');
 
-Route::get('replace', function(){
-    $arr = array("blue","red","green","yellow");
-    print_r(str_replace("red","pink",$arr,$i));
-//    echo "Replacements: $i";
-});
+Route::get('/getvisits/{id}', 'ApiController@getChunkedVisits');
+
+Route::get('/getvisit', 'ApiController@getVisitDetails');
