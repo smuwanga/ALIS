@@ -630,7 +630,6 @@ class ApiController extends \BaseController
 
                 }
 
-
 //                dd(json_encode($updated_result_list));
                 $visit_test['testresultList'] = $updated_result_list;
                 $visit_test['specimenrejectList'] = $updated_rejections;
@@ -643,7 +642,6 @@ class ApiController extends \BaseController
             $visit['specimentestList'] = $updated_tests;
 //            dd(json_encode($visit));
 
-
             $visit4[] = $visit;
 //            dd(json_encode($updated_result_list));
 //
@@ -651,29 +649,7 @@ class ApiController extends \BaseController
 
 //        dd(json_encode($visit4));
 
-        $all_visits['patientvisit'] = $visit4;
-
-
-        // Add POC table
-//        $all_visits['poc'] = json_decode(json_encode($this->pocTable()), true);
-//
-//        // Add poc_result to each POC
-//        $poc_visits = [];
-//        $poc_results = [];
-//        foreach ($all_visits['poc'] as $poc) {
-//            $poc['pocresultList'] = [];
-//            $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
-//
-//            $poc_results[] = $poc;
-//
-//        }
-//
-//        $all_visits['poc'] = $poc_results;
-//
-//        // Add users
-//        $all_visits['users'] = json_decode(json_encode($this->users()));
-//
-//        $all_visits['clinicians'] = json_decode(json_encode($this->clinicians()), true);
+        $all_visits = $visit4;
 
         $all_visits = str_replace("0000-00-00 00:00:00",null, json_encode($all_visits),$i);
         $all_visits = str_replace("0000-00-00",null, $all_visits,$i);
@@ -754,7 +730,7 @@ class ApiController extends \BaseController
             $result = [];
             $visits = json_decode(json_encode($id), true);
             $result = json_decode($this->getPatientVisits($id)->getContent(), true);
-            $vis['patientvisit'][] = $result;
+            $vis['patientvisit'][] = $result[0];
         }
 
         // Add POC table
