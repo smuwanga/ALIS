@@ -750,7 +750,7 @@ class ApiController extends \BaseController
         $vis['poc'] = $poc_results;
 
         // Add users
-        $vis['users'] = json_decode(json_encode($this->users()));
+        $vis['facilityusers'] = json_decode(json_encode($this->users()));
 
         // Add clinicians
         $vis['clinicians'] = json_decode(json_encode($this->clinicians()), true);
