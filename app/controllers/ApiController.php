@@ -220,7 +220,8 @@ class ApiController extends \BaseController
         $results = DB::table('analytic_specimen_rejections AS asr')
             ->where('test_id', '=', $test_id)
             ->leftJoin('analytic_specimen_rejection_reasons AS asrr', function ($join) {
-                $join->on('asr.rejection_reason_id', '=', 'asrr.reason_id');
+//                $join->on('asr.rejection_reason_id', '=', 'asrr.reason_id');
+                $join->on('asr.rejection_reason_id', '=', 'asrr.rejection_id');
             })
             ->leftJoin('rejection_reasons AS rr', function ($join) {
                 $join->on('rr.id', '=', 'asr.rejection_reason_id');
@@ -231,17 +232,7 @@ class ApiController extends \BaseController
                 'asr.rejected_by AS rejectedBy',
                 'asr.rejection_reason_id AS rejectionReasonId',
                 'asr.reject_explained_to AS rejectExplainedTo',
-                'asr.time_rejected AS timeRejected'
-            )
-            //                'asrr.rejection_id AS analyticSpecimenRejectionReasonsId',
-            //                'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
-            //                'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
-            //                'asrr.reason_id AS analyticSpecimenRejectionReasonsReasonId',
-            //                'asrr.created_at AS analyticSpecimenRejectionReasonsCreatedAt',
-            //                'asrr.updated_at AS analyticSpecimenRejectionReasonsUpdatedAt',
-            //                'asrr.deleted_at AS analyticSpecimenRejectionReasonsDeletedAt',
-            //                'rr.id AS rejectionReasonsId',
-            //                'rr.reason AS rejectionReasonsReason')
+                'asr.time_rejected AS timeRejected')
             ->orderBy('asr.id', 'asc')
             ->get();
 
@@ -499,7 +490,7 @@ class ApiController extends \BaseController
                 'ut.clinician_id AS unhlsTestsClinicianId', 'ut.purpose AS purpose', 'ut.time_created AS timeCreated',
                 'ut.time_started AS timeStarted', 'ut.time_completed AS timeCompleted', 'ut.time_verified AS timeVerified',
                 'ut.time_sent AS timeSent', 'ut.external_id AS externalId', 'ut.instrument AS instrument', 'ut.approved_by AS approvedBy',
-                'ut.approved_by AS timeApproved', 'ut.revised_by AS unhlsTestsRevisedBy', 'ut.time_revised AS timeRevised',
+                'ut.time_approved AS timeApproved', 'ut.revised_by AS unhlsTestsRevisedBy', 'ut.time_revised AS timeRevised',
                 'tt.id AS testTypesId', 'tt.name AS testTypesName', 'tt.description AS testTypesDescription',
                 'tt.test_category_id AS testTypesTestCategoryId', 'tt.targetTAT AS targetTAT', 'tt.targetTAT_unit AS targetTATunit',
                 'tt.orderable_test AS orderableTest', 'tt.prevalence_threshold AS prevalenceThreshold',
