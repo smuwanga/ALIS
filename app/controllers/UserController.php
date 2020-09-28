@@ -38,7 +38,9 @@ class UserController extends Controller {
         return View::make("user.login");
     }
 
-public function configureFacilitySettings()
+
+    public function configureFacilitySettings()
+
     {
         if (Input::server("REQUEST_METHOD") == "POST")
         {
@@ -75,7 +77,7 @@ public function configureFacilitySettings()
         return View::make("user.facilitySettings");
     }
 
-	
+
     public function logoutAction(){
         Auth::logout();
         return Redirect::route("user.login");

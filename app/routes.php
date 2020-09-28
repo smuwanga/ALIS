@@ -58,6 +58,11 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@configureFacilitySettings"
     ));
 
+    Route::any('/settings', array(
+        "as" => "facility.settings",
+        "uses" => "UserController@configureFacilitySettings"
+    ));
+
 });
 /* Routes accessible AFTER logging in */
 Route::group(array("before" => "auth"), function()
@@ -1228,3 +1233,8 @@ Route::get('clinician', 'ApiController@clinicians');
 Route::post('/recent_visits', 'ApiController@recentVisits');
 
 Route::get('/update', 'ApiController@updateunhlsVisits');
+
+Route::get('/getvisits/{visit_id}/{poc_id}/{clin_id}/{user_id}', 'ApiController@getChunkedVisits');
+
+
+Route::get('/getvisit', 'ApiController@getVisitDetails');
