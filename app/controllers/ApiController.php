@@ -380,9 +380,10 @@ class ApiController extends \BaseController
     }
 
 
-    public function pocTable()
+    public function pocTable($id)
     {
         $results = DB::table('poc_tables AS pt')
+            ->where('id', '>', $id)
             ->select('id AS pocId', 'facility_id AS facilityId', 'district_id AS districtId', 'gender AS gender', 'age AS age', 'exp_no AS expNo',
                 'provisional_diagnosis AS provisionalDiagnosis', 'caretaker_number AS caretakerNumber', 'entry_point AS entryPoint', 'mother_name AS motherName',
                 'infant_name AS infantName', 'breastfeeding_status AS breastfeedingStatus', 'mother_hiv_status AS motherHivStatus', 'collection_date AS collectionDate',
@@ -392,33 +393,38 @@ class ApiController extends \BaseController
                 'given_contrimazole AS givenContrimazole', 'delivered_at AS deliveredAt', 'nin AS nin',
                 'feeding_status AS feedingStatus')
             ->orderBy('id', 'asc')
+            ->limit(1)
             ->get();
 
         return $results;
     }
 
 
-    public function users()
+    public function users($user_id)
     {
         $results = DB::table('users AS u')
+            ->where('u.id', '>', $user_id)
             ->select('u.id AS usersId', 'u.username AS username', 'u.password AS password',
                 'u.email AS email', 'u.name AS name', 'u.gender AS gender', 'u.designation',
                 'u.image AS image', 'u.remember_token AS rememberToken', 'u.facility_id AS facilityId',
                 'u.deleted_at AS deletedAt', 'u.created_at AS createdAt', 'u.updated_at AS updatedAt',
                 'u.phone_contact AS phoneContact')
             ->orderBy('u.id', 'asc')
+            ->limit(1)
             ->get();
 
         return $results;
     }
 
-    public function clinicians()
+    public function clinicians($clinician_id)
     {
         $results = DB::table('clinicians AS c')
+            ->where('c.id', '>', $clinician_id)
             ->select('c.id AS cliniciansId', 'c.name AS name', 'c.cadre AS cadre',
                 'c.phone AS phone', 'c.email AS email', 'c.created_at AS createdAt',
                 'c.active AS active','c.updated_at AS updatedAt')
             ->orderBy('c.id', 'asc')
+            ->limit(1)
             ->get();
 
         return $results;
@@ -714,7 +720,7 @@ class ApiController extends \BaseController
 
     public function getChunkedVisits($id)
     {
-        $visit_ids = $this->chunkVisits($id);
+        $visit_ids = $this->chunkVisits($visit_id);
         $vis = [];
 
         foreach ($visit_ids as $id){
@@ -725,7 +731,7 @@ class ApiController extends \BaseController
         }
 
 //        // Add POC table
-        $vis['poc'] = json_decode(json_encode($this->pocTable()), true);
+        $vis['poc'] = json_decode(json_encode($this->pocTable($poc_id)), true);
 
         // Add poc_result to each POC
         $poc_visits = [];
@@ -741,10 +747,10 @@ class ApiController extends \BaseController
         $vis['poc'] = $poc_results;
 
         // Add users
-        $vis['facilityusers'] = json_decode(json_encode($this->users()));
+        $vis['facilityusers'] = json_decode(json_encode($this->users($user_id)));
 
         // Add clinicians
-        $vis['clinicians'] = json_decode(json_encode($this->clinicians()), true);
+        $vis['clinicians'] = json_decode(json_encode($this->clinicians($clinician_id)), true);
 
         return $vis;
     }
