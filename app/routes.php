@@ -1229,6 +1229,7 @@ Route::post('/recent_visits', 'ApiController@recentVisits');
 
 Route::get('/update', 'ApiController@updateunhlsVisits');
 
-Route::get('/getvisits/{id}', 'ApiController@getChunkedVisits');
+Route::get('/getvisits/{visit_id}/{poc_id}/{clin_id}/{user_id}', 'ApiController@getChunkedVisits');
+
 
 Route::get('/getvisit', 'ApiController@getVisitDetails');
