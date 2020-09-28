@@ -523,7 +523,7 @@ class ApiController extends \BaseController
     }
 
 
-    public function getPatientVisits($visit_id = null)
+    public function getPatientVisits($visit_id)
     {
         $specimens = [];
 //        $visits = $this->unhlsVisits();
@@ -534,7 +534,6 @@ class ApiController extends \BaseController
         // Add Specimentest key to each visit
         $patient_visits = [];
         $visits = json_decode(json_encode($visits), true);
-
         $visits2 = [];
         $test_results = [];
         foreach ($visits as $visit) {
@@ -589,6 +588,8 @@ class ApiController extends \BaseController
                 $patient_visit['specimentestList'] = $updated_tests;
                 $visit3[] = $patient_visit;
 //                dd(json_encode($patient_visit));
+            }else{
+                $visit3[] = $patient_visit;
             }
 //            }
             $specimen[] = $patient_visit;
