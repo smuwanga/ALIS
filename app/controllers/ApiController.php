@@ -718,7 +718,9 @@ class ApiController extends \BaseController
     }
 
 
-    public function getChunkedVisits($id)
+
+//    public function getChunkedVisits($id)
+    public function getChunkedVisits($visit_id, $poc_id, $clinician_id, $user_id)
     {
         $visit_ids = $this->chunkVisits($visit_id);
         $vis = [];
