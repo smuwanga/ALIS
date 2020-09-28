@@ -729,7 +729,15 @@ class ApiController extends \BaseController
             $result = [];
             $visits = json_decode(json_encode($id), true);
             $result = json_decode($this->getPatientVisits($id)->getContent(), true);
-            $vis['patientvisit'][] = $result[0];
+            if(!empty($result)){
+                $vis['patientvisit'][] = $result[0];
+            }else{
+                $vis['patientvisit'][] = $result;
+            }
+        }
+
+        if(empty($vis['patientvisit'])){
+            $vis['patientvisit'] = [];
         }
 
 //        // Add POC table
