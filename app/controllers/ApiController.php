@@ -523,7 +523,7 @@ class ApiController extends \BaseController
     }
 
 
-    public function getPatientVisits($visit_id)
+    public function getPatientVisits($visit_id = null)
     {
         $specimens = [];
 //        $visits = $this->unhlsVisits();
