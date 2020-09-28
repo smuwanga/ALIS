@@ -40,6 +40,7 @@ class UserController extends Controller {
 
 
     public function configureFacilitySettings()
+
     {
         if (Input::server("REQUEST_METHOD") == "POST")
         {
