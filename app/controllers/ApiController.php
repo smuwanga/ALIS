@@ -523,19 +523,22 @@ class ApiController extends \BaseController
     }
 
 
+    /**
+     * Fetch visit details
+     * @param null $visit_id
+     * @return mixed
+     */
     public function getPatientVisits($visit_id = null)
     {
-        $specimens = [];
-//        $visits = $this->unhlsVisits();
+
         $visits = $this->getVisitDetails($visit_id);
 
         $visits = json_decode(json_encode($visits), true);
 
         // Add Specimentest key to each visit
-        $patient_visits = [];
         $visits = json_decode(json_encode($visits), true);
         $visits2 = [];
-        $test_results = [];
+
         foreach ($visits as $visit) {
             $visit['specimentestList'] = [];
 
@@ -552,12 +555,8 @@ class ApiController extends \BaseController
         $visit3 = [];
         foreach ($visits2 as $patient_visit) {
             if (!empty($patient_visit['specimentestList'])) {
-                $updated_patient_visit = [];
-                $updated_tests = [];
-                $test_results = [];
-                $test_organisms = [];
-                $test_rejects = [];
-                $test_referrals = [];
+                $updated_patient_visit = $updated_tests = $test_results =
+                $test_organisms = $test_rejects = $test_referrals = [];
 
                 foreach ($patient_visit['specimentestList'] as $spec_test) {
                     // Appending test results to specimentest
@@ -591,7 +590,7 @@ class ApiController extends \BaseController
             }else{
                 $visit3[] = $patient_visit;
             }
-//            }
+
             $specimen[] = $patient_visit;
         }
 //        dd(json_encode($visit3));
@@ -599,7 +598,6 @@ class ApiController extends \BaseController
         $visit4 = [];
         foreach ($visit3 as $visit) {
 //            dd(json_encode($visit['specimentestList']));
-            $result_ranges = [];
             $updated_tests = [];
 
             foreach ($visit['specimentestList'] as $visit_test) {
@@ -619,11 +617,9 @@ class ApiController extends \BaseController
                 foreach ($visit_test['specimenrejectList'] as $test_reject) {
 //                    dd($test_reject);
                     $test_reject['rejectreasonList'] = [];
-//                    $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['analyticSpecimenRejectionsTestId'])), true);
-//                    $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['analyticSpecimenRejectionsTestId'])), true);
                     $reasons_list = json_decode(json_encode($this->rejectReason($test_reject['testId'])), true);
-
                     $test_reject['rejectreasonList'] = $reasons_list;
+
                     $updated_rejections[] = $test_reject;
 
                 }
@@ -720,7 +716,6 @@ class ApiController extends \BaseController
 
 
 
-//    public function getChunkedVisits($id)
     public function getChunkedVisits($visit_id, $poc_id, $clinician_id, $user_id)
     {
         $visit_ids = $this->chunkVisits($visit_id);
@@ -737,6 +732,8 @@ class ApiController extends \BaseController
             }
         }
 
+//        $vis['patientvisit'] =  $vis['patientvisit'] ?? [];   //TODO Enable for PHP 7.0+
+
         if(empty($vis['patientvisit'])){
             $vis['patientvisit'] = [];
         }
@@ -745,8 +742,7 @@ class ApiController extends \BaseController
         $vis['poc'] = json_decode(json_encode($this->pocTable($poc_id)), true);
 
         // Add poc_result to each POC
-        $poc_visits = [];
-        $poc_results = [];
+        $poc_visits = $poc_results = [];
         foreach ($vis['poc'] as $poc) {
             $poc['pocresultList'] = [];
             $poc['pocresultList'] = json_decode(json_encode($this->pocResults($poc['pocId'])), true);
