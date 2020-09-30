@@ -47,6 +47,7 @@ return array(
     'save-request' => 'Save and Request',
     'submit' => 'Submit',
     'save-all' => 'Save All',
+    'facility_settings' => 'Save Settings',
     'type' => 'Type',
     'unit' => 'Unit',
     'update' => 'Update',
