@@ -47,30 +47,35 @@ class UserController extends Controller {
             $validator = Validator::make(Input::all(), array(
                 "username" => "required|min:4",
                 "password" => "required|min:6",
-//                "url" => "required"
+                "main_ip" => "required|min:6",
+                "host_ip" => "required|min:6",
+                "main_ip_port_number" => "required|min:6",
+                "host_ip_port_number" => "required|min:6",
             ));
 
-            if ($validator->passes())
-            {
-                $facility_settings = Input::all();
 
-                $file = fopen('config.properties', 'w');
-                fwrite($file, json_encode($facility_settings));
+            $facility_settings = Input::all();
 
-                $credentials = array(
-                    "username" => Input::get("username"),
-                    "password" => Input::get("password"),
-//                    "url" => Input::get("url"),
-                );
+            // Format file structure
+            $form_input = array("password=".Input::get('password'),
+                            "mainIp=".'http://'.Input::get('main_ip').':'.Input::get('main_ip_port_number'),
+                            "hostIp=".'http://'.Input::get('host_ip').':'.Input::get('host_ip_port_number'),
+                            "username=".Input::get('username'));
 
-//                if(Auth::attempt($credentials)){
-////                    return Redirect::route("user.home");
-//                    return Redirect::route("facility.settings");
-//                }
+            $contents = implode(PHP_EOL, $form_input);
+            $contents .= PHP_EOL . PHP_EOL;
+            file_put_contents("config.properties", $contents);
 
-            }
+            $connection_variables = [
+                'main_ip' => Input::get('main_ip'),
+                'host_ip' => Input::get('host_ip')
+            ];
+
+//                $connection_file = fopen('connection_urls', 'w');
+//                fwrite($connection_file, json_encode($connection_variables));
+
             return Redirect::route('facility.settings')->withInput(Input::except('password'))
-                ->withErrors($validator)
+//                ->withErrors($validator)
                 ->with('message', trans('messages.invalid-login'));
         }
 
