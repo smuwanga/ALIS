@@ -83,6 +83,25 @@ class UserController extends Controller {
     }
 
 
+    // Test for connection with CPHL
+    public function testConnection()
+    {
+
+        $client = new \GuzzleHttp\Client();
+
+        // Create a request
+        $request = $client->get('http://localhost:5000/api/testLogin');
+
+        // Get the actual response without headers
+        $response = $request->getBody();
+
+        $response = 'Connection Successful...' ? 'Connection Established' : 'Connection Failed';
+
+        return Redirect::route('facility.settings')
+                        ->with('info', $response);
+
+    }
+
     public function logoutAction(){
         Auth::logout();
         return Redirect::route("user.login");
