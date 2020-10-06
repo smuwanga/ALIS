@@ -177,7 +177,6 @@ class ApiController extends \BaseController
      *
      * @return Response
      */
-//    public function specimenRejections($test_id) // Reject Reason POJO
     public function rejectReason($test_id) // rejectreasonList POJO
     {
 
@@ -190,13 +189,6 @@ class ApiController extends \BaseController
                 $join->on('rr.id', '=', 'asr.rejection_reason_id');
             })
             ->select(
-//                            'asr.id AS idspecimenrejection',
-//                        'asr.test_id AS analyticSpecimenRejectionsTestId',
-//                        'asr.specimen_id AS analyticSpecimenRejectionsSpecimenId',
-//                        'asr.rejected_by AS analyticSpecimenRejectionsRejectedBy',
-//                        'asr.rejection_reason_id AS analyticSpecimenRejectionsRejectionReasonId',
-//                        'asr.reject_explained_to AS analyticSpecimenRejectionsRejectExplainedTo',
-//                        'asr.time_rejected AS analyticSpecimenRejectionsTimeRejected',
                 'asrr.id AS analyticSpecimenRejectionReasonsId',
                 'asrr.specimen_id AS analyticSpecimenRejectionReasonsSpecimenId',
                 'asrr.rejection_id AS analyticSpecimenRejectionReasonsRejectionId',
@@ -214,7 +206,6 @@ class ApiController extends \BaseController
     }
 
 
-    //public function rejectReason($test_id)  // Specimenreject POJO
     public function specimenReject($test_id)  // Specimenreject POJO
     {
         $results = DB::table('analytic_specimen_rejections AS asr')
@@ -239,6 +230,7 @@ class ApiController extends \BaseController
         return $results;
 
     }
+
 
     public function measureRanges($measure_id)
     {
@@ -310,6 +302,7 @@ class ApiController extends \BaseController
         return $results;
 
     }
+
 
     public function updateunhlsVisits($visit_id = 11)   //PatientVisit POJO
     {
@@ -429,6 +422,7 @@ class ApiController extends \BaseController
 
         return $results;
     }
+
 
     public function referrals($test_id)
     {
@@ -715,7 +709,6 @@ class ApiController extends \BaseController
     }
 
 
-
     public function getChunkedVisits($visit_id, $poc_id, $clinician_id, $user_id)
     {
         $visit_ids = $this->chunkVisits($visit_id);
@@ -770,11 +763,99 @@ class ApiController extends \BaseController
     }
 
 
-    public function recentVisits()
+    public function updateVisitRecord($visit_id = 40, $importDate = '2018-11-22')
     {
-        $visit_id = Input::get('visit_id');
-//            dd(intval($visit_id));
-        $results = $this->getPatientVisits(intval($visit_id));
+        $time_stamps = [];
+        // TODO Fetch visit ID before parsed visit_id
+        $results = UnhlsVisit::where('id', '<', $visit_id)
+            ->limit(1)
+            ->select('id')
+            ->get();
+
+
+        $visit_id = json_decode($results[0],true);
+
+        $result = json_decode($this->getPatientVisits($visit_id)->getContent(), true);
+
+        $result = reset($result);
+
+        $time_stamps['unhlsPatientsDeletedAt'] = $result['unhlsPatientsDeletedAt'];
+        $time_stamps['unhlsPatientsCreatedAt'] = $result['unhlsPatientsCreatedAt'];
+        $time_stamps['unhlsPatientsUpdatedAt'] = $result['unhlsPatientsUpdatedAt'];
+        $time_stamps['unhlsDistrictsCreatedAt'] = $result['unhlsDistrictsCreatedAt'];
+        $time_stamps['unhlsDistrictsUpdatedAt'] = $result['unhlsDistrictsUpdatedAt'];
+        $time_stamps['unhlsVisitsCreatedAt'] = $result['unhlsVisitsCreatedAt'];
+        $time_stamps['unhlsVisitsUpdatedAt'] = $result['unhlsVisitsUpdatedAt'];
+
+        foreach ($result['specimentestList'] as $specimen_time){
+            $time_stamps['timeCreated'] = $specimen_time['timeCreated'];
+            $time_stamps['timeStarted'] = $specimen_time['timeStarted'];
+            $time_stamps['timeCompleted'] = $specimen_time['timeCompleted'];
+            $time_stamps['timeVerified'] = $specimen_time['timeVerified'];
+            $time_stamps['timeSent'] = $specimen_time['timeSent'];
+            $time_stamps['timeApproved'] = $specimen_time['timeApproved'];
+            $time_stamps['timeRevised'] = $specimen_time['timeRevised'];
+            $time_stamps['testTypesDeletedAt'] = $specimen_time['testTypesDeletedAt'];
+            $time_stamps['testTypesCreatedAt'] = $specimen_time['testTypesCreatedAt'];
+            $time_stamps['testTypesUpdatedAt'] = $specimen_time['testTypesUpdatedAt'];
+            $time_stamps['testCategoriesDeletedAt'] = $specimen_time['testCategoriesDeletedAt'];
+            $time_stamps['testCategoriesCreatedAt'] = $specimen_time['testCategoriesCreatedAt'];
+            $time_stamps['testCategoriesUpdatedAt'] = $specimen_time['testCategoriesUpdatedAt'];
+            $time_stamps['specimensTimeCollected'] = $specimen_time['specimensTimeCollected'];
+            $time_stamps['specimensTimeAccepted'] = $specimen_time['specimensTimeAccepted'];
+            $time_stamps['specimenTypesDeletedAt'] = $specimen_time['specimenTypesDeletedAt'];
+            $time_stamps['specimenTypesCreatedAt'] = $specimen_time['specimenTypesCreatedAt'];
+            $time_stamps['specimenTypesUpdatedAt'] = $specimen_time['specimenTypesUpdatedAt'];
+//            dd($time_stamps);
+//            dd($specimen_time['testresultList']);
+            $i = $a = 0;
+            foreach ($specimen_time['testresultList'] as $result_time){
+//                dd($result_time);
+                $time_stamps['timeEntered_'.$i] = $result_time['timeEntered'];
+                $time_stamps['timeRevised_'.$i] = $result_time['timeRevised'];
+                $time_stamps['measuresCreatedAt_'.$i] = $result_time['measuresCreatedAt'];
+                $time_stamps['measuresUpdatedAt_'.$i] = $result_time['measuresUpdatedAt'];
+                $time_stamps['measuresDeletedAt_'.$i] = $result_time['measuresDeletedAt'];
+                $time_stamps['measureTypesDeletedAt_'.$i] = $result_time['measureTypesDeletedAt'];
+                $time_stamps['measureTypesCreatedAt_'.$i] = $result_time['measureTypesCreatedAt'];
+                $time_stamps['measureTypesUpdatedAt_'.$i] = $result_time['measureTypesUpdatedAt'];
+//                dd($time_stamps);
+
+                foreach ($result_time['measurerangeList'] as $measure_time){
+                    $time_stamps['measureRangesDeletedAt_'.$a] = $measure_time['measureRangesDeletedAt'];
+                }
+//                    dd($time_stamps);
+
+            }
+            dd($specimen_time['microorganismList']);
+            foreach ($specimen_time['microorganismList'] as $microrg_time){
+                dd('Albo');
+            }
+
+
+        }
+
+
+
+        dd($result);
+
+
+        // Fetch visit details using visit_id
+        $res = $this->getVisitDetails($visit_id);
+
+        $visit_details = json_decode(json_encode(reset($res)), true);
+
+
+
+        return json_decode(json_encode($results), true);
+
+
+        // TODO Parse visit ID to custom query to return all time columns
+
+        // TODO Fetch values from time keys
+        // TODO Compare time values to $importDate
+        // TODO Parse matched IDs to chunkVisits method
+        // TODO return visit JSON
 
         return Response::json($results);
 
