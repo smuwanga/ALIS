@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder {
 
         DB::unprepared(file_get_contents(base_path() . "/app/database/seeds/test_status.sql"));
         echo "Updated test_statuses Table!\n";
+
+        DB::unprepared(file_get_contents(base_path() . "/app/database/seeds/other_sql_updates.sql"));
+        echo "Updated Tables!\n";
     }
 
 }

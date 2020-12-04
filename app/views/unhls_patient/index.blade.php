@@ -69,24 +69,13 @@
 					<td>{{ $patient->getAge() }}</td>
 					<td>{{ $patient->village_residence }}</td>
 					<!-- <td>{{ $patient->village_workplace  }}</td> -->
-					<td>
-						@if($clinicianUI)
-							@if(Auth::user()->can('manage_appointments'))
-							<!-- can create visit -->
-							<a class="btn btn-sm btn-primary" 
-								href="{{ URL::route('visit.create', array('patient_id' => $patient->id)) }}">
-								<span class="glyphicon glyphicon-plus-sign"></span>
-								Make Appointment
-							</a>
-							@endif
-						@elseif(Auth::user()->can('request_test'))
+					<td>						
 						<!-- can create visit -->
 						<a class="btn btn-sm btn-info"
 							href="{{ URL::route('unhls_test.create', array('patient_id' => $patient->id)) }}">
 							<span class="glyphicon glyphicon-edit"></span>
 							{{ trans('messages.new-test') }}
 						</a>
-						@endif
 						<!-- show the patient (uses the show method found at GET /patient/{id} -->
 						<a class="btn btn-sm btn-success" href="{{ URL::route('unhls_patient.show', array($patient->id)) }}" >
 							<span class="glyphicon glyphicon-eye-open"></span>
@@ -105,15 +94,15 @@
 							{{trans('messages.edit')}}
 						</a>
 						@endif
-						@if(Auth::user()->can('can_delete_patient'))
+				
 						<!-- can delete patient -->
-						<button class="btn btn-sm btn-danger delete-item-link"
+					<!-- 	<button class="btn btn-sm btn-danger delete-item-link"
 							data-toggle="modal" data-target=".confirm-delete-modal"
 							data-id="{{ URL::route('unhls_patient.delete', array($patient->id)) }}">
 							<span class="glyphicon glyphicon-trash"></span>
 							{{ trans('messages.delete') }}
-						</button>
-						@endif
+						</button> -->
+				
 					</td>
 				</tr>
 			@endforeach

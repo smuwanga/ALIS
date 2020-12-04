@@ -47,7 +47,7 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	*/
-	'address-info' => 'Plot No.1 Kamwenge Road P.O. BOX 10 <br> FPRRHL/PRO/025 F2: Laboratory Report Form <br><br>',
+	'address-info' => 'Plot No.1 Kampala Road P.O. BOX 10 <br> FPRRHL/PRO/025 F2: Laboratory Report Form <br><br>',
 
 	/*
 	|--------------------------------------------------------------------------

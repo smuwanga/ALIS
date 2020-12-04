@@ -19,7 +19,7 @@
 			<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 		@endif
 	    	</div>
-	    	<table  id="patient_visits_datatable" class="row-border hover table table-bordered table-condensed table-striped" style="width:100%">
+	    	<table  id="patients_table" class="row-border hover table table-bordered table-condensed table-striped" style="width:100%">
                 <thead>
                     <tr>
                         <th>Visit Lab Number</th>  
@@ -45,7 +45,7 @@
 								<span class="glyphicon glyphicon-eye-open"></span>
 								Request Form
 							</a>
-							
+							@if(Entrust::can('recall_report'))
 								<a class="btn btn-sm btn-danger" href="{{ URL::to('patientvisitreport/recall/' . $visit->id) }}" >
 									<span class="glyphicon glyphicon-eye-open"></span>
 									{{trans('messages.recall-report')}}
@@ -54,7 +54,7 @@
 								<span class="glyphicon glyphicon-eye-open"></span>
 								Request Form
 							</a>
-								
+							@endif	
 							
 						</td>
 					</tr>

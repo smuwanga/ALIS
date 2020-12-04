@@ -24,7 +24,7 @@
 							@endif
 
 							@if(Auth::user()->can('verify_test_results'))
-								@if(!$test->isVerified() && !$test->isApproved())
+								@if(!$test->isVerified() && Auth::user()->id != $test->tested_by)
 								<a class="btn btn-sm btn-success" href="{{ URL::route('test.verify', array($test->id)) }}">
 									<span class="glyphicon glyphicon-thumbs-up"></span>
 									{{trans('messages.verify')}}
@@ -33,7 +33,7 @@
 							@endif
 
 							@if(Auth::user()->can('approve_test_results'))
-								@if($test->isVerified())
+								@if($test->isVerified() && Auth::user()->id != $test->tested_by)
 								
 								<a class="btn btn-sm btn-success" href="{{ URL::route('test.approve', array($test->id)) }}">
 									<span class="glyphicon glyphicon-thumbs-up"></span>
@@ -175,19 +175,18 @@
 							<!-- Clinical notes-->
 							<p class="view-striped"><strong>Clinical notes</strong>
 								
-								
+								@if(!empty($test->therapy->clinical_notes))
 									{{$test->therapy->clinical_notes}}
-								
-
+								@else
+									
+								@endif
+ 
 							</p>
 							<!-- Test Requested by -->
 							<p class="view-striped"><strong>Test requested by</strong>
-								@if(!empty($test->therapy->clinician))
-									{{$test->therapy->clinician}}
-								@elseif(!empty($test->clinician->name ))
-		                            {{$test->clinician->name }}
-		                        
-								@endif
+								@if(isset($test))
+					                    {{$test->createdBy->name}}
+					            @endif
 							</p>
 							<!-- Requested by -->
 							<p class="view-striped"><strong>Phone contact of clinician</strong>

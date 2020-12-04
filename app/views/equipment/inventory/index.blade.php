@@ -34,8 +34,7 @@
 					<th>Name</th>
 					<th>Model</th>
 					<th>Serial number</th>
-                    <th>Facility unique number</th>
-					<th>Location</th>
+					<!-- <th>Location</th> -->
 					<th>Procurement type</th>
 					<th>Purchase date</th>
 					<th>Delivery date</th>
@@ -45,8 +44,7 @@
 					<th>Warranty period</th>
 					<th>Lifetime</th>
 					<th>Service frequency</th>						
-					<th>Service contract</th>	
-                    <th></th>																			
+					<th>Service contract</th>																				
 				</tr>
 			</thead>			
 			<tbody>
@@ -56,8 +54,7 @@
 				<td> {{ $item->name }} </td>
 				<td> {{ $item->model }} </td>
 				<td> {{ $item->serial_number }}  </td>
-                <td> {{ $item->unique_number }}  </td>
-				<td> {{ $location[$item->location] }}</td>
+				<!-- <td> {{ $location[$item->location] }}</td> -->
 				<td> {{ $procurement_type[$item->procurement_type] }}</td>
 
 				<td>  {{ date('d M Y', strtotime($item->purchase_date)) }}</td>
@@ -70,19 +67,6 @@
 				<td>  {{ $item->life_span . ' years'}}</td>
 				<td>  {{ $service_frequency[$item->service_frequency] }}</td>
 				<td class="text-center">  {{ $yes_no[$item->service_contract] }}</td>
-                <td><a class="btn btn-sm btn-info" href="{{ URL::route('equipmentinventory.edit', array($item->id)) }}" >
-							<span class="glyphicon glyphicon-edit"></span>
-							{{trans('messages.edit')}}
-						</a>
-						@if(Auth::user()->can('manage_inventory'))
-						<!-- can delete patient -->
-						<button class="btn btn-sm btn-danger delete-item-link"
-							data-toggle="modal" data-target=".confirm-delete-modal"
-							data-id="{{ URL::route('equipmentinventory.delete', array($item->id)) }}">
-							<span class="glyphicon glyphicon-trash"></span>
-							{{ trans('messages.delete') }}
-						</button>
-						@endif</td>
 							
 				</tr>
 			@endforeach	

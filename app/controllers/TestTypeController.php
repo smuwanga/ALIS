@@ -157,7 +157,7 @@ class TestTypeController extends \BaseController {
 			'targetTAT_unit'=>'required'
 		);
 		$validator = Validator::make(Input::all(), $rules);
-
+		
 		// process the login
 		if ($validator->fails()) {
 			return Redirect::back()->withErrors($validator);

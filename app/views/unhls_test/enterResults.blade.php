@@ -235,6 +235,10 @@
                             {{  Form::label('equipment_id', 'Equipment used', array('class'=>'control-label')) }}
                             {{ Form::select('equipment_id', $equipment_list, Input::old('equipment_id'), array('class' => 'form-control', 'id' => 'equipment_id')) }}                                                      
                         </div>
+                           <div class="form-group">
+                            {{  Form::label('method_used', 'Method used', array('class'=>'control-label')) }}                                  
+                            {{ Form::text('method_used', Input::old('method_used'), array('class' => 'form-control', 'id' => 'method_used')) }}                                                     
+                        </div>
                         <div class="form-group">
                             {{ Form::label('comment', trans('messages.comments')) }}
                             {{ Form::textarea('interpretation', $test->interpretation, 

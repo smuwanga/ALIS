@@ -77,7 +77,7 @@ class EquipmentBreakdownController extends \BaseController {
 				$item->facility_code = Input::get('facility_code');
 				$item->facility_level = Input::get('facility_level');
 				$item->report_date = Input::get('report_date');
-				$item->breakdown_date = Input::get('report_date');
+				$item->breakdown_date = Input::get('breakdown_date'); 
 				$item->verified_by = Input::get('verified_by');
 				$item->verification_date = Input::get('verification_date');
 

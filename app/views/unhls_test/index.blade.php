@@ -43,7 +43,7 @@
                             array('class' => 'form-control standard-datepicker')) }}
                     </div>
                 </div>
-                <div class='col-md-3'>
+                <div class='col-md-2'>
                     <div class='col-md-5'>
                         {{ Form::label('test_status', trans('messages.test-status')) }}
                     </div>
@@ -52,7 +52,15 @@
                             Input::get('test_status'), array('class' => 'form-control')) }}
                     </div>
                 </div>
-                <!--  -->
+                 <div class='col-md-3'>
+                    <div class='col-md-5'>
+                        {{ Form::label('test_category', trans('messages.list-test-categories')) }}
+                    </div>
+                    <div class='col-md-7'>
+                        {{ Form::select('test_category', $testCategories,
+                            Input::get('test_category'), array('class' => 'form-control','id'=> $selectedTestCategoryId)) }}
+                    </div>
+                </div>
                 <div class='col-md-2'>
                         {{ Form::label('search', trans('messages.search'), array('class' => 'sr-only')) }}
                         {{ Form::text('search', Input::get('search'),
@@ -124,7 +132,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <table class="table table-striped table-hover table-condensed">
+            <table id="" class="row-border hover table table-bordered table-condensed table-striped">
                 <thead>
                     <tr>
                         <th class="col-md-1">{{trans('messages.date-ordered')}}</th>
@@ -253,7 +261,7 @@
                                         {{trans('messages.edit')}}
                                     </a>
                                 @endif
-                                @if(Auth::user()->can('verify_test_results'))
+                                @if(Auth::user()->can('verify_test_results') && Auth::user()->id != $test->tested_by)
                                     <a class="btn btn-sm btn-success" id="verify-{{$test->id}}-link"
                                         href="{{ URL::route('unhls_test.viewDetails', array($test->id)) }}"
                                         title="{{trans('messages.verify-title')}}">

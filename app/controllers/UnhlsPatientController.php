@@ -78,7 +78,9 @@ class UnhlsPatientController extends \BaseController {
 			'name'       => 'required',
 			'gender' => 'required',
 			'dob' => 'required' ,
-			'nationality' => 'required' ,
+			'nationality' => 'required'
+			// 'village_residence' => 'required'
+
 		);
 		$validator = Validator::make(Input::all(), $rules);
 

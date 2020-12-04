@@ -1,10 +1,9 @@
 <style type="text/css">
 	 table {
-	 	padding: 2px;
+	 	padding: 3px;
+	 	
 	 }
 </style>
-<br>
-<br>
 
 
 <table style="border-bottom: 1px solid #cecfd5; font-size:8px;
@@ -46,15 +45,27 @@
 		<td width="20%"><strong>Requesting Officer</strong>:</td>
 		<td width="30%">
 		@if(isset($tests))
-			{{ is_null($tests->first()) ? '':$tests->first()->requested_by }}
-		@endif
-		</td>
+            @if(!empty($tests->first()))
+                @if(!empty($tests->first()->requested_by))
+                    {{$tests->first()->clinician->name}}
+                @elseif(!empty($tests->first()->clinician_id))
+                    {{$tests->first()->clinicians->name}}
+                    @endif
+            @endif
+            @endif
+		</td> 
 
 		<td width="20%"><strong>Officer's Contact</strong>:{{ is_null($tests->first()->therapy->contact)? '': $tests->first()->therapy->contact}}</td>
 		<td width="30%">
 		@if(isset($tests))
-			{{ is_null($tests->first()) ? '':'' }}
-		@endif
+                @if(!empty($tests->first()))
+                    @if(!empty($tests->first()->therapy->contact))
+                        {{$tests->first()->therapy->contact}}
+                    @elseif(!empty($tests->first()->clinician_id))
+                        {{$tests->first()->clinicians->phone}}
+                    @endif
+                @endif
+            @endif
 		</td>
 
 		
@@ -64,16 +75,24 @@
 		<td width="20%"><strong>Facility/Dept</strong>:</td>
 		<td width="30%">
 		@if(isset($tests))
-			@if(!is_null($tests->first()))
-			{{ is_null($tests->first()->visit->ward) ? '':$tests->first()->visit->ward->name }}
-			@endif
-		@endif
+            @if(!is_null($tests->first()))
+            {{ is_null($tests->first()->visit->ward) ? '':$tests->first()->visit->ward->name }}
+            @else
+            {{ is_null($tests->first()->visit->facility) ? '':$tests->first()->visit->facility->name }}
+            @endif
+        @endif
 		</td>
 
 		<td width="25%"><strong>Patient Facility/Dept ID</strong>:</td>
 		<td width="25%">
 		
-			{{is_null( $patient->patient_number)?'': $patient->patient_number}}
+			@if(isset($tests))
+            @if(!is_null($tests->first()))
+            {{is_null( $patient->patient_number)?'': $patient->patient_number}}
+            @else
+            {{ is_null($tests->first()->visit) ? '':$tests->first()->visit->facility_lab_number }}
+            @endif
+        @endif
 			
 	
 		</td>
@@ -99,7 +118,7 @@
 	@if(isset($tests))
 		@forelse($tests as $test)
 				<tr>	
-					<td>{{ isset($test->specimen->specimenType->name)? $test->specimen->specimenType->name : ''}}</td>
+					<td>{{ isset($test->specimen->specimen_type_id)?$test->specimen->specimenType->name:'' }}</td>
 
 					@if($test->specimen->specimen_status_id == UnhlsSpecimen::NOT_COLLECTED)
 						
@@ -115,7 +134,7 @@
 						
 					@endif
 
-					<td >{{ isset($test->testType->testCategory->name)?$test->testType->testCategory->name:'' }}</td>
+					<td >{{ isset($test->testType->test_category_id)?$test->testType->testCategory->name:'' }}</td>
 					<td >{{ isset($test->testType->name)?$test->testType->name:'' }}</td>
 				</tr>
 		@empty
@@ -142,7 +161,7 @@
 
 @forelse($tests as $test)
 	@if( $test->testStatus->name == 'approved')
-	<table  id="results_content_id" style="border-bottom: 1px solid #cecfd5; font-size:10px;font-family: 'Courier New',Courier;">
+	<table  id="results_content_id" style="border-bottom: 1px solid #cecfd5; font-size:8px;font-family: 'Courier New',Courier;">
 		<tr>
 			<td width="20%">{{ $test->testType->name }}</td>
 			<td width="80%">
@@ -168,7 +187,11 @@
 								
 								@endif</td>
 								<td>
-								{{ $result->result }}
+								@if($result->revised_result!=null)
+											{{$result->revised_result}} (Revised result)
+											@else
+											{{$result->result}}
+											@endif
 								</td>
 								<td>
 									{{ Measure::getRange($test->visit->patient, $result->measure_id) }}
@@ -176,7 +199,10 @@
 								<td>
 									{{ Measure::find($result->measure_id)->unit }}
 								</td>
-								<td></td><!-- Diagnostic Flag column for results-->
+								<td>@if(!is_null(Measure::getRange($test->visit->patient, $result->measure_id)))
+										{{Measure::measureFlag($test->visit->patient, $result->measure_id, $result->result) }}
+									@endif
+								</td><!-- Diagnostic Flag column for results-->
 							</tr>
 							@endif
 						@endforeach
@@ -184,38 +210,47 @@
 							<tr>
 								<td><b>Interpretation:</b></td> <td>{{$test->interpreteHIVResults()}}</td>
 							</tr>
-						@else
+						@endif
 							<tr>
 								<td width="100%"><br><br>
-									<b>Comment on Patient/Sample Suitability:</b> {{ $test->interpretation == '' ? 'Suitable for the test' : $test->interpretation }}
-								</td>
-								
+									<b>{{trans('messages.comments')}}:</b> {{ $test->interpretation == '' ? 'Suitable for the test' : $test->interpretation }}
+								</td>								
 							</tr>
-	                        <tr>
-								<td width="100%"><br><br>
-									<b>Expert Interpretation:</b> 
-									<br>
-								</td>
+							<tr>
+								<td width="100%">
+									<b>Equipment/Technique used:</b> 
+									@if(!is_null($test->instrument_id) || $test->instrument_id == '0')
+									{{$test->equipment->name}}
+									@elseif(!is_null($test->method_used))
+									{{$test->method_used}}
+									@else
+									@endif
+								</td> 
 								
-							</tr>
+							</tr>	       
 							<tr>
 								<td width="50%" style="font-size:8px">
-									<b>Results Entry Date</b>:{{ $test->time_completed }}</td>
+									@if($test->time_revised!=null)
+									<b>Results Revision Date</b>:{{$test->time_revised}}
+									@else
+									<b>Results Entry Date</b>:{{ $test->time_completed }}
+									@endif
+								</td>
 								<td width="50%">
 									<b>{{trans('messages.tested-by')}}</b>:
 									{{ $test->testedBy->name}}
-								</td>
-								
-							</tr>
-							
+								</td>								
+							</tr>							
 							<tr>
+								@if($test->time_revised!=null)
+								<td></td>
+								<td></td>
+								@else
 								<td width="50%"><b>Reviewed by</b>:{{$test->verifiedBy->name}}</td>
-								<td width="50%"><b>Date Reviewed</b>:{{$test->time_verified}}</td>
-								
-							</tr>
-							
-							
-						@endif
+								<td width="50%"><b>Date Reviewed</b>:{{$test->time_verified}}</td>	
+								@endif							
+							</tr>						
+						
 						</tbody>
 				</table>
 			</td>
@@ -274,7 +309,7 @@
         <table style="border-bottom: 1px solid #cecfd5;">
             <tr>
               <td><b>Analysis Performed by:</b></td>
-              <td>{{ $test->isCompleted()?$test->testedBy->name:'Pending' }}</td>
+              <td>{{ isset($test->tested_by)?$test->testedBy->name:'' }}</td>
               <!-- <td><b>Verified by:</b></td>
               <td>{{ $test->isVerified()?$test->verifiedBy->name:'Pending' }}</td> -->
             </tr>
@@ -306,7 +341,7 @@
 
 <hr>
 
-<table>
+<table style="border-bottom: 1px solid #cecfd5; font-size:8px;font-family: 'Courier New',Courier;">
 	<tr><td></td></tr>
 	<tr>
 		<td>

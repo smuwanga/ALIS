@@ -30,7 +30,7 @@
             </tr>
         </thead>
     </table>
-<br>
+
 <table  border="0" width="100%"; style="border-bottom: 1px solid #cecfd5">
     <tr>
         <td width="20%"><b>Patient Name</b></td>
@@ -45,24 +45,27 @@
         <td width="30%">{{ $patient->phone_number}}</td>
     </tr>
     <tr>
-        <td width="20%"><b>Requesting Officer</b></td>
-        <td width="30%">@if(isset($tests))
+        <td width="20%"><strong>Requesting Officer</strong>:</td>
+        <td width="30%">
+        @if(isset($tests))
             @if(!empty($tests->first()))
                 @if(!empty($tests->first()->requested_by))
                     {{$tests->first()->clinician->name}}
                 @elseif(!empty($tests->first()->clinician_id))
-                    {{$tests->first()->clinician_id}}
+                    {{$tests->first()->clinicians->name}}
                     @endif
             @endif
             @endif
-        </td>
-        <td width="20%"><b>Officer's Contact</b></td>
-        <td width="30%">@if(isset($tests))
+        </td> 
+
+        <td width="20%"><strong>Officer's Contact</strong>:{{ is_null($tests->first()->therapy->contact)? '': $tests->first()->therapy->contact}}</td>
+        <td width="30%">
+        @if(isset($tests))
                 @if(!empty($tests->first()))
                     @if(!empty($tests->first()->therapy->contact))
                         {{$tests->first()->therapy->contact}}
-                    @elseif(!empty($tests->first()->clinician->phone))
-                        {{$tests->first()->clinician->phone}}
+                    @elseif(!empty($tests->first()->clinician_id))
+                        {{$tests->first()->clinicians->phone}}
                     @endif
                 @endif
             @endif
@@ -88,7 +91,7 @@
             {{ is_null($tests->first()->visit) ? '':$tests->first()->visit->facility_lab_number }}
             @endif
         @endif
-              l
+              
         </td>
     </tr>
 </table>

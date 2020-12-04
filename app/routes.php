@@ -52,6 +52,16 @@ Route::group(array("before" => "guest"), function()
         "as" => "user.login",
         "uses" => "UserController@loginAction"
     ));
+   
+   Route::any('/settings', array(
+        "as" => "facility.settings",
+        "uses" => "UserController@configureFacilitySettings"
+    ));
+
+    Route::get('/connection', array(
+        "as" => "facility.connection",
+        "uses" => "UserController@testConnection"
+    ));
 
 });
 /* Routes accessible AFTER logging in */
@@ -491,6 +501,10 @@ Route::group(array("before" => "auth"), function()
         "before" => "checkPerms:approve_test_results",
         "as"   => "test.approve",
         "uses" => "UnhlsTestController@approve"
+    ));
+    Route::get("/print/{id}", array(
+        "as"   => "visit.print",
+        "uses" => "ReportController@print_visit"
     ));
     Route::resource('culture', 'CultureController');
     Route::resource('cultureobservation', 'CultureObservationController');
@@ -1165,3 +1179,20 @@ Route::group(array("before" => "auth"), function()
     ));
 
 });
+
+// Attachment of files
+Route::resource('fileupload', 'FileAttachmentController');
+    Route::get("/resultupload/", array(
+        "as"   => "fileupload.resultupload",
+        "uses" => "FileAttachmentController@result_upload"
+    ));
+
+    Route::post("/updateupload/", array(
+        "as"   => "fileupload.updateupload",
+        "uses" => "FileAttachmentController@updateupload"
+    ));
+
+
+// DATA WARE HOUSE API ENDPOINTS
+
+Route::get('/getvisits/{visit_id}/{poc_id}/{clin_id}/{user_id}', 'ApiController@getChunkedVisits');

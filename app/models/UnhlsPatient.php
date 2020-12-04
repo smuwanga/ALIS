@@ -39,6 +39,14 @@ class UnhlsPatient extends Eloquent
         return $this->hasOne('MicroPatientDetail', 'patient_id');
     }
 
+    /**
+	 * Relationship with patient antibiotics
+	 */
+    public function onAntibiotics()
+    {
+        return $this->hasMany('PatientAntibiotics', 'patient_id');
+    }
+
 
     public static function getAllPatients(){
     	$sql = "select * from unhls_patients";
@@ -236,7 +244,7 @@ class UnhlsPatient extends Eloquent
 				$initials .= $n[0];
 
 			}
-			return $facilityCode.'/'.$yearMonth.'/'.$autoNum.'/'.$initials;
+			return $facilityCode.'-'.$yearMonth.'-'.$autoNum.'-'.$initials;
 		}
     }
     public function isMicro(){

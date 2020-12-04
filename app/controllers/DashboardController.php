@@ -40,7 +40,7 @@ class DashboardController extends Controller {
         }
 
         $tests = UnhlsTest::whereBetween('time_created', [$from, $to]);
-        $testCounts =$tests->whereTestStatusId('5')->orWhere('test_status_id', '=', '4')->count();
+        $testCounts =$tests->whereTestStatusId('7')->orWhere('test_status_id', '=', '5')->whereBetween('time_created', [$from, $to])->count();
         $testsReffered =$tests->whereTestStatusId('8')->count();
 
         $samples = UnhlsSpecimen::whereBetween('time_collected', [$from, $to]);
@@ -53,7 +53,7 @@ class DashboardController extends Controller {
         $samplesRejected = $samples->whereSpecimenStatusId('3')->count();
 
         $staffCount = User::count();
-
+ 
         // $testTypeID =TestType::getTestTypeIdByTestName('Malaria RDTs');
 
         $getPrevalenceCounts =  TestType::getPrevalenceCounts($from, $to, $testTypeID=0, $ageRange=null);
@@ -71,16 +71,16 @@ class DashboardController extends Controller {
             }
         }
 
-        $items =Item::get();
-        $stock =Stock::get();
-        foreach ($items as $key => $value) {
-            $stockout = $value->where('min_level', '<=',$value->quantity())->count();
-        }
+        // $items =Item::get();
+        // $stock =Stock::get();
+        // foreach ($items as $key => $value) {
+        //     $stockout = $value->where('min_level', '<=',$value->quantity())->count();
+        // }
 
-        foreach ($stock as $key => $value) {
-            $expiredItems = $value->where('quantity_ordered', '<', $value->quantity())->where('expiry_date', '<=', $date->format('Y-m-d'))->count();
-        }
-
+        // foreach ($stock as $key => $value) {
+        //     $expiredItems = $value->where('quantity_ordered', '<', $value->quantity())->where('expiry_date', '<=', $date->format('Y-m-d'))->count();
+        // }
+        // dd($expiredItems);
 
         return View::make("dashboard.home")
             ->with('dateFrom', $dateFrom)
@@ -94,9 +94,9 @@ class DashboardController extends Controller {
             ->with('sampleCounts', $sampleCounts)
             ->with('samplesAccepted', $samplesAccepted)
             ->with('samplesRejected', $samplesRejected)
-            ->with('items', $items)
-            ->with('stockout', $stockout)
-            ->with('expiredItems', $expiredItems)
+            // ->with('items', $items)
+            // ->with('stockout', $stockout)
+            // ->with('expiredItems', $expiredItems)
             ->with('staff', $staffCount);
     }
 

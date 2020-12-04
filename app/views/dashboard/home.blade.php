@@ -175,7 +175,7 @@ $date = new DateTime();
 				<div class="stat_box">
 					<div class="stat_ico color_d"><i class="ion-ios-list"></i></div>
 					<div class="stat_content">
-						<span class="stat_count">{{ $expiredItems }}</span>
+						<span class="stat_count">{{ 0 }}</span>
 						<span class="stat_name">Number of expired tracer items</span>
 					</div>
 
@@ -183,7 +183,7 @@ $date = new DateTime();
 				<div class="stat_box">
 					<div class="stat_ico color_d"><i class="ion-ios-list"></i></div>
 					<div class="stat_content">
-						<span class="stat_count">{{ $stockout}}</span>
+						<span class="stat_count">{{ 0}}</span>
 						<span class="stat_count"></span>
 						<span class="stat_name">Number of stocked out tracer items</span>
 					</div>

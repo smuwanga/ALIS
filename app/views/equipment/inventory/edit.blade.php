@@ -1,14 +1,14 @@
 @extends("layout")
 @section("content")
 <div>
-	<ol class="breadcrumb">
-	  <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
+    <ol class="breadcrumb">
+      <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
       <li><a href="{{{URL::route('metric.index')}}}">{{trans('messages.metricsList')}}</a></li>
-	 	  <li class="active">{{ Lang::choice('messages.editMetrics',2) }}</li>
-	</ol>
+          <li class="active">{{ Lang::choice('messages.editMetrics',2) }}</li>
+    </ol>
 </div>
 @if (Session::has('message'))
-	<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
+    <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 @endif
 @if($errors->all())
                 <div class="alert alert-danger">
@@ -16,12 +16,12 @@
                 </div>
 @endif
 <div class="panel panel-primary">
-	<div class="panel-heading ">
-		<span class="ion-gear-a"></span>
-		{{ Lang::choice('messages.metrics',2) }}
-	</div>
-	<div class="panel-body">
-		   {{ Form::model($metrics, array('route' => array('metric.update', $metrics->id),'method'=>'PUT', 'id' => 'form-edit-metrics')) }}
+    <div class="panel-heading ">
+        <span class="ion-gear-a"></span>
+        {{ Lang::choice('messages.metrics',2) }}
+    </div>
+    <div class="panel-body">
+           {{ Form::model($metrics, array('route' => array('metric.update', $metrics->id),'method'=>'PUT', 'id' => 'form-edit-metrics')) }}
 
             <div class="form-group">
                 {{ Form::label('name', trans('messages.unit-of-issue')) }}
@@ -38,9 +38,9 @@
             </div>
         {{ Form::close() }}
 
-		<?php  
-		Session::put('SOURCE_URL', URL::full());?>
-	</div>
-	
+        <?php  
+        Session::put('SOURCE_URL', URL::full());?>
+    </div>
+    
 </div>
 @stop

@@ -13,7 +13,7 @@ class InterimReportPdf extends TCPDF {
 		}*/
 
 		$this->writeHTML(View::make('interimReportHeader',$this->getTestRequestInformation()), true, false, true, false, '');
-		$this->SetMargins(PDF_MARGIN_LEFT, 70, PDF_MARGIN_RIGHT);
+		$this->SetMargins(PDF_MARGIN_LEFT, 80, PDF_MARGIN_RIGHT);
 		
 	}
 

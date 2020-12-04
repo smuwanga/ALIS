@@ -73,9 +73,10 @@
 
 				{{ Form::label('caretaker_number', 'Caretaker Tel. No.', array('class' =>'col-sm-2 ')) }}
 				{{ Form::text('caretaker_number', Input::old('caretaker_number'), array('class' => 'form-control col-sm-4')) }}
-
+			</div>
+			<div class="form-group"> 
 				{{ Form::label('admission_date', 'Admission Date', array('class' =>'col-sm-2 ')) }}
-				{{ Form::text('admission_date', Input::old('admission_date'), array('class' => 'form-control standard-datepicker standard-datepicker-nofuture col-sm-4', 'placeholder' => 'Ignore if not admitted', )) }}
+				{{ Form::text('admission_date', Input::old('admission_date'), array('class' => 'form-control standard-datepicker standard-datepicker col-sm-4', 'placeholder' => 'Ignore if not admitted', )) }}
 
 			</div>
 
@@ -127,18 +128,18 @@
 				<br>
 				<div>
 				<div class="radio-inline">{{ Form::radio("feeding_status", 'Exclusive Breast Feeding', false) }} <span class="input-tag"><b>EBF</b> Exclusive Breast Feeding</span></div>
-				<div class="radio-inline">{{ Form::radio("feeding_status", 'Replacement Feeding', false) }} <span class="input-tag"><b>RF</b> Replacement Feeding(never breastfed) </span></div>
+				<div class="radio-inline col-sm-4">{{ Form::radio("feeding_status", 'Replacement Feeding', false) }} <span class="input-tag"><b>RF</b> Replacement Feeding(never breastfed) </span></div>
 				</div>
 				<div>
 				<div class="radio-inline">{{ Form::radio("feeding_status", 'Mixed Feeding', false) }} <span class="input-tag"><b>M</b> Mixed Feeding (below 6 months)</span></div>
-				<div class="radio-inline">{{ Form::radio("feeding_status", 'Complimentary Feeding', false) }} <span class="input-tag"><b>C</b> Complimentary Feeding (above 6 months)</span></div>
+				<div class="radio-inline col-sm-4">{{ Form::radio("feeding_status", 'Complimentary Feeding', false) }} <span class="input-tag"><b>C</b> Complimentary Feeding (above 6 months)</span></div>
 				</div>
 				<div>
 				<div class="radio-inline">{{ Form::radio("feeding_status", 'Wean from breastfeeding', false) }} <span class="input-tag"><b>W</b> Wean from breastfeeding</span></div>
-				<div class="radio-inline">{{ Form::radio("feeding_status", 'No longer breastfeeding', false) }} <span class="input-tag"><b>NLB</b> No longer breastfeeding</span></div>
+				<div class="radio-inline col-sm-4">{{ Form::radio("feeding_status", 'No longer breastfeeding', false) }} <span class="input-tag"><b>NLB</b> No longer breastfeeding</span></div>
 				</div>
 			</div>
-
+ 
 			<div class="form-group">
 				<br>
 				<span>
@@ -146,17 +147,19 @@
 				</span>
 				<br>
 				<br>
-
+				<div class="form-group"> 
 				{{ Form::label('mother_name', 'Mothers HTS No', array('class' =>'col-sm-2 ')) }}
 				{{ Form::text('mother_name', Input::old('mother_name'), array('class' => 'form-control col-sm-2')) }}
-
-
+				</div>
+				<div class="form-group">
 				{{ Form::label('mother_hiv_status', 'ART NO', array('class' =>'col-sm-2 ')) }}
 				{{ Form::text('mother_hiv_status', Input::old('mother_hiv_status'), array('class' => 'form-control col-sm-2')) }}
+				</div>
+				<div class="form-group">
 
 				{{ Form::label('nin', 'NIN', array('class' =>'col-sm-2 ')) }}
 				{{ Form::text('nin', Input::old('nin'), array('class' => 'form-control col-sm-2')) }}
-
+				</div>
 			</div>
 			<br>
 
@@ -251,7 +254,7 @@
 						{{ Form::text('sample_id', Input::old('sample_id'), array('class' => 'form-control col-sm-4')) }}
 
 						{{ Form::label('collection_date', 'Sample Collection Date:', array('class' =>'col-sm-2 ')) }}
-						{{ Form::text('collection_date', Input::old('collection_date'), array('class' => 'form-control standard-datepicker standard-datepicker-nofuture col-sm-4', 'placeholder' => 'YYYY-MM-DD')) }}
+						{{ Form::text('collection_date', Input::old('collection_date'), array('class' => 'form-control standard-datepicker col-sm-4', 'placeholder' => 'YYYY-MM-DD')) }}
 					</div>
 					<div class="form-group">
 						{{ Form::label('requesting_officer', 'Recieved By:', array('class' =>'col-sm-2 ')) }}

@@ -1,6 +1,7 @@
 @section("footer")
 	<!-- Begin footer section -->
 	<!-- Delete Modal-->
+	<br>
 	<div class="modal fade confirm-delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 			aria-hidden="true">
 		<div class="modal-dialog">

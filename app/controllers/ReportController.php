@@ -30,21 +30,38 @@ class ReportController extends \BaseController {
 
 		// Load the view and pass the patients
 		return View::make('reports.patient.index')->with('patients', $patients)
-		->with('patient_helper',$patient_helper);
+		->with('patient_helper',$patient_helper)->withInput(Input::all());
 	}
 
 	public function loadPatientss()
 	{
 		$search = Input::get('search');
 
-		$patients = UnhlsPatient::search($search)->orderBy('id','DESC')->paginate(Config::get('kblis.page-items'));
+		$patients = UnhlsPatient::search($search)->orderBy('id','DESC')->paginate(Config::get('kblis.page-items'))->appends(Input::except('_token'));
 
 		if (count($patients) == 0) {
 		 	Session::flash('message', trans('messages.no-match'));
 		}
+		$tests = UnhlsTest::where('test_status_id', '=', 9)->get();
+		$error = '';
+	 
+		//	Get patient details
+		// $patient = UnhlsPatient::find($id);
+		$visits = UnhlsVisit::orderBy('id', 'DESC')->take(200)->get();
 
 		// Load the view and pass the patients
-		return View::make('reports.patient.merged')->with('patients', $patients)->withInput(Input::all());
+		return View::make('reports.patient.merged')->with('visits', $visits)->with('patients', $patients)->with('tests', $tests)->withInput(Input::all());
+	}
+
+	public function print_visit($id)
+	{
+		$visit = UnhlsVisit::findorFail($id);
+		//dd($visit);
+		$visit->printed_by = Auth::user()->id;
+		$visit->is_printed = 1;
+		$visit->time_printed = date('Y-m-d H:i:s');
+		$visit->update();
+		return Redirect::back();
 	}
 
 
@@ -205,7 +222,7 @@ class ReportController extends \BaseController {
 
 		// adhoc config decision
 		//$template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
-		$template = "reports.patient.entebbe_iso";
+		$template = "reports.patient.standard";
 
 		$content = View::make($template)
 			->with('patient', $patient)
@@ -293,8 +310,8 @@ class ReportController extends \BaseController {
 		
 		
 		// adhoc config decision
-		//$template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
-		$template = "reports.patient.entebbe_iso";
+		// $template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
+		$template = "reports.patient.standard";
 
 		$content = View::make($template)
 			->with('patient', $patient)
@@ -447,8 +464,8 @@ class ReportController extends \BaseController {
          
 
 		// adhoc config decision
-		//$template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
-		$template = "reports.patient.entebbe_iso";
+		$template = AdhocConfig::where('name','Report')->first()->getReportTemplate();
+		$template = "reports.patient.standard";
 
 		$content = View::make($template)
 			->with('patient', $patient)
@@ -685,6 +702,13 @@ class ReportController extends \BaseController {
 		$testCategory = TestCategory::find($input);
 		$testTypes = $testCategory->testTypes();
 		return Response::make($testTypes->get(['id','name']));
+	}
+
+	public function fetchTestTypes(){
+		$input = Input::get('option');
+		$testCategory = TestCategory::find($input);
+		$testTypes = $testCategory->testTypes();
+		return $testTypes->get(['id','name']);
 	}
 
 	//	Begin Daily Log-Patient report functions

@@ -108,18 +108,7 @@
 					    @endforelse
 				    </tbody>
 				  </table>
-				  <table class="table table-bordered">
-					  <tbody>
-						    <tr>
-						    	<td><b>Total</b></td>
-				  				<td><b>{{$data->sum('total')}}</b></td>
-				  				<td><b>{{$data->sum('Within')}}</b></td>
-				  				<td><b>{{$data->sum('Beyond')}}</b></td>
-				  				<td><b>{{round($data->sum('Within') / $data->sum('total') * 100, 2)}}</b></td>
-				  				<td><b>{{round($data->sum('Beyond') / $data->sum('total') * 100, 2)}}</b></td>
-						    </tr>
-					    </tbody>
-				  </table>
+				 
 				</div>
 			  </div>
 			</div>

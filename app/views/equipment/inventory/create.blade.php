@@ -1,15 +1,15 @@
 @extends("layout")
 @section("content")
 <div>
-	<ol class="breadcrumb">
+    <ol class="breadcrumb">
         <li><a href="{{{URL::route('user.home')}}}">{{trans('messages.home')}}</a></li>
         <li><a href="{{{URL::route('equipmentinventory.index')}}}">{{trans('messages.equipment-list')}}</a></li>
         <li class="active">{{ Lang::choice('messages.equipment',2) }}</li>
-	</ol>
+    </ol>
 
 </div>
 @if (Session::has('message'))
-	<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
+    <div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 @endif
 @if($errors->all())
                 <div class="alert alert-danger">
@@ -19,36 +19,26 @@
 
 
 <div class="panel panel-primary">
-	<div class="panel-heading ">
-		<span class="glyphicon glyphicon-plus"></span>
-		{{ Lang::choice('messages.equipment',2) }}
-	</div>
-	<div class="panel-body">
+    <div class="panel-heading ">
+        <span class="glyphicon glyphicon-plus"></span>
+        {{ Lang::choice('messages.equipment',2) }}
+    </div>
+    <div class="panel-body">
 
-	
+    
       {{ Form::open(array('url' => 'equipmentinventory/store', 'autocomplete' => 'off', 'class' => 'form-horizontal', 'data-toggle' => 'validator')) }}
 
                             <fieldset> 
 
-								<div class="form-group">
-                                {{  Form::label('name_id', 'Name', array('class'=>'control-label')) }}
-                                  <div class="col-md-4">
-                                        {{ Form::select('name_id', $equipment_names, Input::old('name_id'), array('class' => 'form-control', 'id' => 'name_id')) }}  
-                                      
-                                        @if ($errors->has('name_id'))
-                                            <span class="text-danger">
-                                                <strong>{{ $errors->first('name_id') }}</strong>
-                                            </span>
-                                        @endif
 
-                                  </div>
-                                </div> 
                                 <div class="form-group">
-                                {{ Form::label('unique_number', 'Unique Number', ['class' => 'col-md-2 control-label']) }}
+                                {{ Form::label('equipment_name', 'Name', ['class' => 'col-md-2 control-label']) }}
                                   <div class="col-md-3">
-                                        {{ Form::text('unique_number',null,['class' => 'form-control','placeholder' => 'Unique Number', 'required' => 'true']) }}                                        @if ($errors->has('unique_number'))
+                                        {{ Form::text('equipment_name',null,['class' => 'form-control','placeholder' => 'Name', 'required' => 'true']) }}
+
+                                        @if ($errors->has('equipment_name'))
                                             <span class="text-danger">
-                                                <strong>{{ $errors->first('unique_number') }}</strong>
+                                                <strong>{{ $errors->first('equipment_name') }}</strong>
                                             </span>
                                         @endif
 
@@ -100,7 +90,7 @@
                                 <div class="form-group">
                                 {{  Form::label('procurement_type', 'Procurement type', array('class'=>'control-label')) }}
                                   <div class="col-md-4">
-                                        {{ Form::select('procurement_type', array(null => 'Select')+ array('0' => 'Placement', '1' => 'Procured', '2' => 'Donation'), Input::old('procurement_type'), array('class' => 'form-control', 'id' => 'procurement_type_id')) }}  
+                                        {{ Form::select('procurement_type', array(null => 'Select')+ array('0' => 'Placement', '1' => 'Procured', '2' => 'Donation', '3' => 'Unknown'), Input::old('procurement_type'), array('class' => 'form-control', 'id' => 'procurement_type_id')) }}  
                                       
                                         @if ($errors->has('procurement_type'))
                                             <span class="text-danger">
@@ -114,7 +104,7 @@
                                 <div class="form-group">
                                 {{ Form::label('purchase_date', 'Purchase date', ['class' => 'col-md-2 control-label']) }}
                                   <div class="col-md-4">
-                                        {{ Form::text('purchase_date', Input::old('purchase_date'),array('class' => 'form-control standard-datepicker purchase-date','required'=>'required')) }}
+                                        {{ Form::text('purchase_date', Input::old('purchase_date'),array('class' => 'form-control standard-datepicker purchase-date')) }}
 
                                         @if ($errors->has('purchase_date'))
                                             <span class="text-danger">
@@ -233,7 +223,7 @@
                                 <div class="form-group">
                                 {{  Form::label('service_contract', 'Service Contract', array('class'=>'control-label')) }}
                                   <div class="col-md-4">
-                                        {{ Form::select('service_contract', array(null => 'Select')+ $yes_no_list, Input::old('service_contract'), array('class' => 'form-control', 'id' => 'service_contract_id','required'=>'required')) }}  
+                                        {{ Form::select('service_contract', array(null => 'Select')+ $service_contract_list, Input::old('service_contract'), array('class' => 'form-control', 'id' => 'service_contract_id','required'=>'required')) }}  
                                       
                                         @if ($errors->has('service_contract'))
                                             <span class="text-danger">
@@ -271,10 +261,10 @@
         
         {{ Form::close() }}
 
-		<?php  
-		Session::put('SOURCE_URL', URL::full());?>
-	</div>
-	
+        <?php  
+        Session::put('SOURCE_URL', URL::full());?>
+    </div>
+    
 </div>
 
 <script>

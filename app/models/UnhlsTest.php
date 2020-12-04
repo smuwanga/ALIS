@@ -48,7 +48,7 @@ class UnhlsTest extends Eloquent
 	*/
 	public function therapy()
 	{
-		return $this->belongsTo('Therapy','visit_id');
+		return $this->belongsTo('Therapy','visit_id','visit_id');
 	}
 
 	
@@ -62,6 +62,11 @@ class UnhlsTest extends Eloquent
 		return $this->belongsTo('Clinician', 'requested_by', 'id');
 	}
 
+	public function clinicians()
+	{
+		return $this->belongsTo('Clinician', 'clinician_id', 'id');
+	}
+
 	public function getClinician()
 	{
 		return Clinician::find($this->clinician_id);
@@ -72,6 +77,10 @@ class UnhlsTest extends Eloquent
 	public function testType()
 	{
 		return $this->belongsTo('TestType');
+	}
+
+	public function equipment(){
+		return $this->belongsTo('Instrument', 'instrument_id');
 	}
 
 	/**
@@ -430,7 +439,7 @@ class UnhlsTest extends Eloquent
 					INNER JOIN unhls_visits v ON t.visit_id = v.id
 					INNER JOIN unhls_patients p ON v.patient_id = p.id
 					INNER JOIN unhls_test_results tr ON t.id = tr.test_id AND m.id = tr.measure_id
-				WHERE (t.test_status_id=4 OR t.test_status_id=5) AND m.measure_type_id = 2
+				WHERE (t.test_status_id=4 OR t.test_status_id=5 OR t.test_status_id=7) AND m.measure_type_id = 2
 					AND t.time_created BETWEEN ? AND ? $testCategoryWhereClause
 				GROUP BY tt.id, m.id, mr.alphanumeric, s.id) AS alpha
 				UNION
@@ -527,10 +536,10 @@ class UnhlsTest extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function search($searchString = '', $testStatusId = 0, $dateFrom = NULL, $dateTo = NULL)
+	public static function search($searchString = '', $testStatusId = 0, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -567,6 +576,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}
@@ -623,10 +642,10 @@ class UnhlsTest extends Eloquent
 	* @return Collection 
 	*/
 	// todo: =this should include verified tests
-	public static function completedTests($searchString = '', $testStatusId = 4, $dateFrom = NULL, $dateTo = NULL)
+	public static function completedTests($searchString = '', $testStatusId = 4, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -668,6 +687,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}
@@ -698,10 +727,10 @@ class UnhlsTest extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function pendingTests($searchString = '', $testStatusId = 2, $dateFrom = NULL, $dateTo = NULL)
+	public static function pendingTests($searchString = '', $testStatusId = 2, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -743,6 +772,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}
@@ -773,10 +812,10 @@ class UnhlsTest extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function startedTests($searchString = '', $testStatusId = 3, $dateFrom = NULL, $dateTo = NULL)
+	public static function startedTests($searchString = '', $testStatusId = 3, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -818,6 +857,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}
@@ -848,10 +897,10 @@ class UnhlsTest extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function notRecieved($searchString = '', $testStatusId = 1, $dateFrom = NULL, $dateTo = NULL)
+	public static function notRecieved($searchString = '', $testStatusId = 1, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -893,6 +942,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}
@@ -923,10 +982,10 @@ class UnhlsTest extends Eloquent
 	* @param String $dateTo
 	* @return Collection 
 	*/
-	public static function verified($searchString = '', $testStatusId = 5, $dateFrom = NULL, $dateTo = NULL)
+	public static function verified($searchString = '', $testStatusId = 5, $testCategoryId = 0, $dateFrom = NULL, $dateTo = NULL)
 	{
 
-		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'specimen', 'testStatus', 'testStatus.testPhase')
+		$tests = UnhlsTest::with('visit', 'visit.patient', 'testType', 'testType.testCategory', 'specimen', 'testStatus', 'testStatus.testPhase')
 			->where(function($q) use ($searchString){
 
 			$q->whereHas('visit', function($q) use ($searchString)
@@ -968,6 +1027,16 @@ class UnhlsTest extends Eloquent
 			{
 				$q->whereHas('testStatus', function($q) use ($testStatusId){
 					$q->where('id','=', $testStatusId);//Filter by test status
+				});
+			});
+		}
+
+		if($testCategoryId > 0){
+			// $condition = $condition." AND tt.test_category_id = ".$testCategoryId;
+			$tests = $tests->where(function($q) use ($testCategoryId)
+			{
+				$q->whereHas('testType.testCategory', function($q) use ($testCategoryId){
+					$q->where('id','=', $testCategoryId);//Filter by test status
 				});
 			});
 		}

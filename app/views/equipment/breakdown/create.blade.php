@@ -53,7 +53,7 @@
 
 
 						{{ Form::label('report_date', 'Date Of Report', ['class' => 'col-lg-2 control-label']) }}
-						{{ Form::text('report_date', Input::old('report_date'), array('class' => 'form-control col-sm-4 standard-datepicker', 'id' => 'report_date','required'=>'required')) }}
+						{{ Form::text('report_date', Input::old('report_date'), array('class' => 'form-control col-sm-4 standard-datepicker','required'=>'required')) }}
 					</div>
 				</div>
 
@@ -66,7 +66,7 @@
 
 
 						{{  Form::label('equipment_type', 'Equipment Type', array('class'=>'col-lg-2')) }}
-						{{ Form::select('equipment_type', array(null => 'Select')+UNHLSEquipmentInventory::lists('name','id'), Input::old('equipment_id'), array('class' => 'form-control col-sm-4', 'id' => 'equipment_id', 'required'=>'required')) }}
+						{{ Form::select('equipment_type', array(null => 'Select')+UNHLSEquipmentInventory::lists('model','id'), Input::old('equipment_id'), array('class' => 'form-control col-sm-4', 'id' => 'equipment_id', 'required'=>'required')) }}
 
 						{{  Form::label('equipment_id', 'Equipment Name', array('class'=>'col-lg-2')) }}
 						{{ Form::select('equipment_id', array(null => 'Select')+UNHLSEquipmentInventory::lists('name','id'), Input::old('equipment_id'), array('class' => 'form-control col-sm-4', 'id' => 'equipment_id', 'required'=>'required')) }}
@@ -156,7 +156,7 @@
 						{{ Form::text('verified_by',null,['class' => 'form-control','rows'=>'5']) }}
 
 						{{ Form::label('verification_date', 'Verification Date:', ['class' => 'col-lg-2 control-label']) }}
-						{{ Form::text('verification_date', Input::old('verification_date'), array('class' => 'form-control standard-datepicker', 'id' => 'report_date','required'=>'required')) }}
+						{{ Form::text('verification_date', Input::old('verification_date'), array('class' => 'form-control standard-datepicker','required'=>'required')) }}
 					</div>
 
 				</div>

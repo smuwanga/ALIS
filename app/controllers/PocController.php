@@ -477,6 +477,24 @@ $result->equipment_used = Input::get('equipment_used');
 
 	}
 
+	public function dataPull(){
+
+		$ch = curl_init();
+    	$headers = array(
+		    'Content-type: application/json'
+		);
+		curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:8080/validate_patient");
+		// SSL important
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+		$response = curl_exec($ch);
+		curl_close($ch);
+		$unique_id = json_decode($response, true);
+		\Log::info($unique_id);
+	}
+
 	/**
 	 *Return a unique Lab Number
 	 *

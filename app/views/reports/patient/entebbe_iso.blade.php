@@ -1,53 +1,51 @@
 <style type="text/css">
 	 table {
-	 	padding: 2px;
+	 	padding: 3px;
 	 }
-	 img{
-		padding-left: 20px;
-	}
 </style>
-<table style="border-bottom: 1px solid #cecfd5; font-size:9px; font-family: Bookman Old Style;">
-	<thead>
-	    <tr>
-	            <th width="20%"><strong>Sample Type</strong></th>
-	            <th width="20%"><strong>Date Collected</strong></th>
-	            
-	            <th width="20%"><strong>Date Received</strong></th>
-	            
-	            <th width="20%"><strong>{{ Lang::choice('messages.test-category', 1)}}</strong></th>
-	            <th width="20%"><strong>Tests Requested</strong></th>
-	        </tr>
-	</thead>
-	<tbody>
-	    @if(isset($tests))
-	        @forelse($tests as $test)
-	                <tr>    
-	                    <td>{{$test->specimen->specimen_type_id}}</td>
+<table style="border-bottom: 1px solid #cecfd5; font-size:8px;
+ font-family: 'Courier New',Courier;">
+<thead>
+ 	<tr>
+			<th width="20%"><strong>Sample Type</strong></th>
+			<th width="20%"><strong>Date Collected</strong></th>
+			
+			<th width="20%"><strong>Date Received</strong></th>
+			
+			<th width="20%"><strong>{{ Lang::choice('messages.test-category', 1)}}</strong></th>
+			<th width="20%"><strong>Tests Requested</strong></th>
+		</tr>
+</thead>
+<tbody>
+	@if(isset($tests))
+		@forelse($tests as $test)
+				<tr>	
+					<td>{{ isset($test->specimen->specimen_type_id)?$test->specimen->specimenType->name:'' }}</td>
 
-	                    @if($test->specimen->specimen_status_id == UnhlsSpecimen::NOT_COLLECTED)
-	                        
-	                        <td>{{trans('messages.specimen-not-collected')}}</td>
-	                        <td>not received</td>
-	                    @elseif($test->specimen->specimen_status_id == UnhlsSpecimen::ACCEPTED)
-	                        <td >{{ ($test->specimen->time_collected)?$test->specimen->time_collected:'' }}</td>
-	                        <td >{{isset($test->specimen->time_accepted)?$test->specimen->time_accepted : ''}}</td>
-	                        
-	                    @elseif($test->test_status_id == UnhlsTest::REJECTED)
-	                        <td >{{trans('messages.specimen-not-collected')}}</td>
-	                        <td >{{isset($test->specimen->time_rejected)?$test->specimen->time_rejected:''}}</td>
-	                        
-	                    @endif
+					@if($test->specimen->specimen_status_id == UnhlsSpecimen::NOT_COLLECTED)
+						
+						<td>{{trans('messages.specimen-not-collected')}}</td>
+						<td>not received</td>
+					@elseif($test->specimen->specimen_status_id == UnhlsSpecimen::ACCEPTED)
+						<td >{{ ($test->specimen->time_collected)?$test->specimen->time_collected:'' }}</td>
+						<td >{{isset($test->specimen->time_accepted)?$test->specimen->time_accepted : ''}}</td>
+						
+					@elseif($test->test_status_id == UnhlsTest::REJECTED)
+						<td >{{trans('messages.specimen-not-collected')}}</td>
+						<td >{{isset($test->specimen->time_rejected)?$test->specimen->time_rejected:''}}</td>
+						
+					@endif
 
-	                    <td >{{ isset($test->testType->testCategory->name)?$test->testType->testCategory->name:'' }}</td>
-	                    <td >{{ isset($test->testType->name)?$test->testType->name:'' }}</td>
-	                </tr>
-	        @empty
-	            <tr>
-	                <td colspan="5">{{trans("messages.no-records-found")}}</td>
-	            </tr>
-	        @endforelse
-	    @endif
-	</tbody>
+					<td >{{ isset($test->testType->test_category_id)?$test->testType->testCategory->name:'' }}</td>
+					<td >{{ isset($test->testType->name)?$test->testType->name:'' }}</td>
+				</tr>
+		@empty
+			<tr>
+				<td colspan="5">{{trans("messages.no-records-found")}}</td>
+			</tr>
+		@endforelse
+	@endif
+</tbody>
 
 </table>
 
@@ -83,11 +81,11 @@
 							<!-- show only parameters with values -->
 							@if($result->result != '')
 							<tr>
-								@if($test->testType->measures->count() > 1)
 								<td>
+								@if($test->testType->measures->count() > 1)
 									{{ Measure::find($result->measure_id)->name }}:
-								</td>
 								@endif
+								</td>
 								<td>
 								@if($result->revised_result!=null)
 											{{$result->revised_result}} (Revised result)
@@ -117,6 +115,18 @@
 								<td width="100%"><br><br>
 									<b>{{trans('messages.comments')}}:</b> {{ $test->interpretation == '' ? 'Suitable for the test' : $test->interpretation }}
 								</td>								
+							</tr>
+							<tr>
+								<td width="100%">
+									<b>Equipment/Technique used:</b>
+									@if(!is_null($test->instrument_id) || $test->instrument_id == '0')
+									{{$test->equipment->name}}
+									@elseif(!is_null($test->method_used))
+									{{$test->method_used}}
+									@else
+									@endif
+								</td> 
+								
 							</tr>	       
 							<tr>
 								<td width="50%" style="font-size:8px">
@@ -202,8 +212,8 @@
         <table style="border-bottom: 1px solid #cecfd5; font-size:10px;font-family: 'Courier New',Courier;">
             <tr>
               <td colspan="2"><b>Analysis Performed by:</b></td>
-              <td colspan="4">{{ $test->isCompleted()?$test->testedBy->name:'Pending' }}</td>
-              <!-- <td><b>Verified by:</b></td>
+              <td colspan="4">{{ isset($test->tested_by)?$test->testedBy->name:'' }}</td>
+              <!-- <td><b>Verified by:</b></td> 
               <td>{{ $test->isVerified()?$test->verifiedBy->name:'Pending' }}</td> -->
             </tr>
         </table>

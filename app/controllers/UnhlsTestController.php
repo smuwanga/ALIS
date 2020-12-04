@@ -31,7 +31,7 @@ class UnhlsTestController extends \BaseController {
 
 		$searchString = isset($input['search'])?$input['search']:'';
 		$testStatusId = isset($input['test_status'])?$input['test_status']:'';
-		// $testCategoryId = isset($input['test_category'])?$input['test_category']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
 		}else{
@@ -41,13 +41,13 @@ class UnhlsTestController extends \BaseController {
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
 		// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 			if ($searchString != '') {
 				$dateFrom = '';
 				$dateTo = '';
 			}
 
-			$tests = UnhlsTest::search($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::search($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 				Session::flash('message', trans('messages.empty-search'));
@@ -56,7 +56,7 @@ class UnhlsTestController extends \BaseController {
 		else
 		{
 			// List all the active tests
-			$tests = UnhlsTest::orderBy('time_created', 'ASC');
+			$tests = UnhlsTest::orderBy('time_created', 'DESC');
 		}
 
 		// Create Test Statuses array. Include a first entry for ALL
@@ -87,8 +87,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testSet', $tests)
 					->with('testStatus', $statuses)
 					->with('barcode', $barcode)
-					// ->with('selectedTestCategoryId', $test_categories)
-					// ->with('selectedTestCategoryId', $testCategoryId)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
 					->withInput($input);
@@ -118,6 +118,7 @@ class UnhlsTestController extends \BaseController {
 		}
 
 		$searchString = isset($input['search'])?$input['search']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		$testStatusId = '4';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
@@ -129,9 +130,9 @@ class UnhlsTestController extends \BaseController {
 		$tests = UnhlsTest::CompletedTests();
 
 				// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 
-			$tests = UnhlsTest::completedTests($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::completedTests($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -150,6 +151,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
@@ -162,6 +168,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testStatus', $statuses)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('barcode', $barcode)
 					->withInput($input);
 
@@ -187,6 +195,7 @@ class UnhlsTestController extends \BaseController {
 		}
 
 		$searchString = isset($input['search'])?$input['search']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		$testStatusId = '2';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
@@ -197,9 +206,9 @@ class UnhlsTestController extends \BaseController {
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
 				// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 
-			$tests = UnhlsTest::pendingTests($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::pendingTests($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -218,6 +227,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
@@ -229,6 +243,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testStatus', $statuses)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('barcode', $barcode)
 					->withInput($input);
 
@@ -254,6 +270,7 @@ class UnhlsTestController extends \BaseController {
 		}
 
 		$searchString = isset($input['search'])?$input['search']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		$testStatusId = '3';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
@@ -264,9 +281,9 @@ class UnhlsTestController extends \BaseController {
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
 				// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 
-			$tests = UnhlsTest::startedTests($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::startedTests($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -285,6 +302,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
@@ -296,6 +318,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testStatus', $statuses)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('barcode', $barcode)
 					->withInput($input);
 
@@ -321,6 +345,7 @@ class UnhlsTestController extends \BaseController {
 		}
 
 		$searchString = isset($input['search'])?$input['search']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		$testStatusId = '1';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
@@ -331,9 +356,9 @@ class UnhlsTestController extends \BaseController {
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
 				// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 
-			$tests = UnhlsTest::startedTests($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::startedTests($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -352,6 +377,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
@@ -363,6 +393,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testStatus', $statuses)
 					->with('dateFrom', $dateFrom)
 					->with('dateTo', $dateTo)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('barcode', $barcode)
 					->withInput($input);
 
@@ -389,6 +421,7 @@ class UnhlsTestController extends \BaseController {
 		}
 
 		$searchString = isset($input['search'])?$input['search']:'';
+		$testCategoryId = isset($input['test_category'])?$input['test_category']:'';
 		$testStatusId = '5';
 		if (isset($input['date_from'])) {
 			$dateFrom = $input['date_from'];
@@ -399,9 +432,9 @@ class UnhlsTestController extends \BaseController {
 		$dateTo = isset($input['date_to'])?$input['date_to']:'';
 
 				// Search Conditions
-		if($searchString||$testStatusId||$dateFrom||$dateTo){
+		if($searchString||$testStatusId||$testCategoryId||$dateFrom||$dateTo){
 
-			$tests = UnhlsTest::verified($searchString, $testStatusId, $dateFrom, $dateTo);
+			$tests = UnhlsTest::verified($searchString, $testStatusId, $testCategoryId, $dateFrom, $dateTo);
 
 			if (count($tests) == 0) {
 			 	Session::flash('message', trans('messages.empty-search'));
@@ -420,6 +453,11 @@ class UnhlsTestController extends \BaseController {
 			$statuses[$key] = trans("messages.$value");
 		}
 
+		$test_categories = array('All')+TestCategory::all()->lists('name','id');
+		foreach ($test_categories as $key => $value) {
+			$test_categories[$key] = $value;
+		}
+
 		// Pagination
 		$tests = $tests->paginate(Config::get('kblis.page-items'))->appends($input);
 
@@ -431,6 +469,8 @@ class UnhlsTestController extends \BaseController {
 					->with('testStatus', $statuses)
 					->with('barcode', $barcode)
 					->with('dateFrom', $dateFrom)
+					->with('testCategories', $test_categories)
+					->with('selectedTestCategoryId', $testCategoryId)
 					->with('dateTo', $dateTo)
 					->withInput($input);
 
@@ -590,7 +630,7 @@ class UnhlsTestController extends \BaseController {
                         $test->test_status_id = UnhlsTest::PENDING;
                         $test->created_by = Auth::user()->id;
                         $test->clinician_id = Input::get('clinician');
-                        $test->requested_by = Input::get('intern');
+                        $test->requested_by = Input::get('clinician');
                         $test->purpose = Input::get('hiv_purpose');
                         $test->save();
 
@@ -623,6 +663,19 @@ class UnhlsTestController extends \BaseController {
 	{
 		$specimen = UnhlsSpecimen::find($specimenID);
 		return View::make('unhls_test.collect')->with('specimen', $specimen);
+	}
+
+	public function collectSpecimenModal()
+	{
+		$now = new DateTime();
+		$collectionDate = $now->format('Y-m-d H:i');
+		$receptionDate = $now->format('Y-m-d H:i');
+		$specimen = UnhlsSpecimen::find(Input::get('id'));
+		$specimenTypes = SpecimenType::all();
+		return View::make('unhls_test.collectSpecimen')
+			->with('collectionDate', $collectionDate)
+			->with('specimen', $specimen)
+			->with('specimenTypes', $specimenTypes);
 	}
 
     /**
@@ -817,7 +870,7 @@ class UnhlsTestController extends \BaseController {
 		$test->time_started = date('Y-m-d H:i:s');
 		$test->save();
 		return $test->test_status_id;
-	}
+	} 
 
 	/**
 	 * Display Result Entry page
@@ -827,7 +880,8 @@ class UnhlsTestController extends \BaseController {
 	 */
 	public function enterResults($testID)
 	{	
-		$equipment_list = array_merge_maintain_keys(array('' => 'Select one'),getEquipmentAndUniqueNumber());
+		$equipment_list = array('---Choose Instrument---') + Instrument::all()->lists('name','id');
+		// dd($equipment_list);
 		$test = UnhlsTest::find($testID);
 		// if the test being carried out requires a culture worksheet
 		if ($test->testType->isCulture()) {
@@ -873,6 +927,8 @@ class UnhlsTestController extends \BaseController {
 		$test->test_status_id = UnhlsTest::COMPLETED;
 		$test->tested_by = Auth::user()->id;
 		$test->time_completed = date('Y-m-d H:i:s');
+		$test->instrument_id = Input::get('equipment_id');
+		$test->method_used = Input::get('method_used');
 
 		if ($test->testType->name == 'Gram Staining') {
 			$results = '';

@@ -1083,6 +1083,20 @@ $(function(){
 		$(this).remove();
 	});
 
+    /** Print visit button.
+     *  - Updates the Test status via an AJAX call
+     *  - Changes the UI to show the right status and buttons
+     */
+    $('.visit-log').on( "click", ".view-visit", function(e) {
+        var testID = $(this).data('test-id');
+        var url = $(this).attr('href');
+        $.get(url, { id: testID}).done(function(){});
+
+        // Now remove the unnecessary buttons
+        $(this).siblings('.refer-button').remove();
+        $(this).remove();
+    });
+
 	/**
 	 *-----------------------------------
 	 * REPORTS
@@ -1090,18 +1104,40 @@ $(function(){
 	 */
 
 		/*Dynamic loading of select list options*/
-		$('#section_id').change(function(){
-			$.get("/reports/dropdown",
-				{ option: $(this).val() },
-				function(data) {
-					var test_type = $('#test_type');
-					test_type.empty();
-					test_type.append("<option value=''>Select Test Type</option>");
-					$.each(data, function(index, element) {
-			            test_type.append("<option value='"+ element.id +"'>" + element.name + "</option>");
-			        });
-				});
-		});
+		// $('#section_id').change(function(){
+		// 	$.get("/reports/dropdown",
+		// 		{ option: $(this).val() },
+		// 		function(data) {
+		// 			var test_type = $('#test_type');
+		// 			test_type.empty();
+		// 			test_type.append("<option value=''>Select Test Type</option>");
+		// 			$.each(data, function(index, element) {
+		// 	            test_type.append("<option value='"+ element.id +"'>" + element.name + "</option>");
+		// 	        });
+		// 		});
+		// });
+        $('#section_id').on('change', function() {
+        var testTypeCategoryId = $('#section_id').val();
+        if (testTypeCategoryId != 0 ) {
+            $.ajax({
+                type: 'GET',
+                url: "/tat/test_types",
+                data: {
+                    option: testTypeCategoryId
+                },
+                success: function(data){
+                    $('#test_type').empty();
+                    //$('#test_type').append("<option value=''>Select Test Type</option>");
+                    
+                    for(i=0;i<data.length;i++){
+                        $('#test_type').append("<option value='"+ data[i].id +"'>" + data[i].name + "</option>");
+
+                    }
+                    
+                }
+            });
+        }
+    });
 		/*End dynamic select list options*/
 				/*Dynamic loading of select list options*/
 		$('#commodity-id').change(function(){

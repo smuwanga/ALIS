@@ -17,6 +17,10 @@ class Instrument extends Eloquent
 	  return $this->belongsToMany('TestType', 'instrument_testtypes');
 	}
 
+	public function equipment(){
+		return $this->belongsTo('UnhlsTest', 'instrument_id');
+	}
+
 	/**
 	 * Set compatible specimen types
 	 *

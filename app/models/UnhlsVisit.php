@@ -32,6 +32,14 @@ class UnhlsVisit extends Eloquent
 	{
 		return $this->belongsTo('Ward', 'ward_id');
 	}
+
+	/**
+	 * User relationship
+	 */
+	public function printBy()
+	{
+		return $this->belongsTo('User', 'printed_by');
+	}
 	/**
 	 * Refferral Facility relationship
 	 */
