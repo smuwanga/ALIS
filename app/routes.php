@@ -58,9 +58,9 @@ Route::group(array("before" => "guest"), function()
         "uses" => "UserController@configureFacilitySettings"
     ));
 
-    Route::any('/settings', array(
-        "as" => "facility.settings",
-        "uses" => "UserController@configureFacilitySettings"
+    Route::get('/connection', array(
+        "as" => "facility.connection",
+        "uses" => "UserController@testConnection"
     ));
 
 });
