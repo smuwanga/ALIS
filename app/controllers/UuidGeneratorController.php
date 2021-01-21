@@ -24,9 +24,10 @@ class UuidGeneratorController extends \BaseController {
 			$uuid = new UuidGenerator;
 
 			if($incrementNum > 1){
-				$uuid->resetUuid($incrementNum);
-
-				// return Redirect::route('resetulin.create')->with('message', 'ULIN has been succesfully reset to '.$incrementNum);
+				$uuid->truncate();
+				$uuid->id = $incrementNum;
+				$uuid->counter = $incrementNum;
+				$uuid->save();
 				return Redirect::to($url)->with('message', 'Success! The next ULIN will now start at: '.$incrementNum);
 
 			}else{
@@ -37,6 +38,23 @@ class UuidGeneratorController extends \BaseController {
 
 		}
 			
+	}
+
+	public function specimen_collection(){
+
+		$rules = array('incrementNum' => 'required');
+
+		$validator = Validator::make(Input::all(), $rules);
+
+		if($validator->fails()){
+			//return Redirect::route('resetulin.create')->with('message', 'Please Enter a number to reset to');
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
+		}else{
+			\DB::statement("ALTER TABLE `specimens` CHANGE `specimen_status_id` `specimen_status_id` INT(10) UNSIGNED NOT NULL DEFAULT '1'");
+
+				return Redirect::route('resetulin.create')->with('message', 'Sample collection option activated');
+			}
+
 	}
 	/**
 	 * Display a listing of the resource.

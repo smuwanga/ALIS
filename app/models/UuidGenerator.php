@@ -9,4 +9,10 @@ class UuidGenerator extends \Eloquent {
     protected $table = 'uuids';
 
     public $timestamps = false;
+
+    public function resetUuid($incrementNum){
+        
+        	$statement = 'ALTER TABLE uuids AUTO_INCREMENT = '.$incrementNum;
+        	DB::statement($statement);
+    }
 }

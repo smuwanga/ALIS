@@ -678,6 +678,22 @@ class UnhlsTestController extends \BaseController {
 			->with('specimenTypes', $specimenTypes);
 	}
 
+	public function collectSpecimenAction()
+	{
+		$specimen = UnhlsSpecimen::find(Input::get('specimen_id'));
+	
+		//$specimen = UnhlsSpecimen::find($specimen_id);
+		$specimen->specimen_status_id = UnhlsSpecimen::ACCEPTED;
+		$specimen->accepted_by = Auth::user()->id;
+		$specimen->sample_obtainer = Input::get('sample_obtainer');
+        $specimen->time_collected = Input::get('collection_date');
+        $specimen->time_accepted = Input::get('reception_date');
+        $specimen->save();
+
+		return Redirect::route('unhls_test.index')
+			->with('message', 'You have successfully saved specimen collection details');
+	}
+
     /**
      * Display accept specimen page
      *

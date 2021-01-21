@@ -47,10 +47,13 @@ class ReportController extends \BaseController {
 	 
 		//	Get patient details
 		// $patient = UnhlsPatient::find($id);
-		$visits = UnhlsVisit::orderBy('id', 'DESC')->take(200)->get();
+		$visits = UnhlsVisit::search($search)->orderBy('id', 'DESC')->paginate(25)->appends(Input::except('_token'));
 
 		// Load the view and pass the patients
-		return View::make('reports.patient.merged')->with('visits', $visits)->with('patients', $patients)->with('tests', $tests)->withInput(Input::all());
+		return View::make('reports.patient.merged')
+						->with('visits', $visits)
+						->with('patients', $patients)
+						->with('tests', $tests)->withInput(Input::all());
 	}
 
 	public function print_visit($id)
@@ -1211,8 +1214,9 @@ class ReportController extends \BaseController {
 			$ungroupedTests = array();
 			foreach (TestType::all() as $testType) {
 				$pending = $testType->countPerStatus([UnhlsTest::PENDING, UnhlsTest::STARTED], $from, $toPlusOne->format('Y-m-d H:i:s'));
-				$complete = $testType->countPerStatus([UnhlsTest::COMPLETED, UnhlsTest::VERIFIED, UnhlsTest::APPROVED], $from, $toPlusOne->format('Y-m-d H:i:s'));
-				$ungroupedTests[$testType->id] = ["complete"=>$complete, "pending"=>$pending];
+				$complete = $testType->countPerStatus([UnhlsTest::COMPLETED, UnhlsTest::VERIFIED], $from, $toPlusOne->format('Y-m-d H:i:s'));
+				$approved = $testType->countPerStatus([UnhlsTest::APPROVED, UnhlsTest::APPROVED], $from, $toPlusOne->format('Y-m-d H:i:s'));
+				$ungroupedTests[$testType->id] = ["complete"=>$complete, "pending"=>$pending, "approved"=>$approved];
 			}
 
 			// $data = $data->groupBy('test_type_id')->paginate(Config::get('kblis.page-items'));
@@ -1222,7 +1226,6 @@ class ReportController extends \BaseController {
 							->withInput(Input::all());
 		}
 	}
-
 	/*
 	*	Begin turnaround time functions - functions related to the turnaround time report
 	*	Most have been borrowed from the original BLIS by C4G
@@ -2563,51 +2566,77 @@ public static function getturnaroundTimeChart($testTypeID = 0){
 		if(!$dateFrom) $dateFrom = date('Y-m-01');
 		if(!$dateTo) $dateTo = date('Y-m-d');
 
-		$drugs = Drug::all();
+		$drugs = Drug::orderBy('name', 'asc')->get();
+	
+		
+		$isolatedOrganisms = UnhlsTest::selectRaw('specimens.time_accepted as Recieved, specimens.time_collected as collected, 
+			unhls_patients.patient_number as number, unhls_patients.ulin as labID,	unhls_patients.name as PatientName,unhls_patients.admission_date,
+			unhls_districts.name as DistrictofResident,unhls_visits.hospitalized, unhls_patients.gender, unhls_patients.dob as age,
+			unhls_visits.visit_type,unhls_visits.on_antibiotics as onAntibiotics ,wards.name as Ward,micro_patients_details.clinical_notes as diagnosis, specimen_types.name as SpecimenType, 
+			unhls_tests.test_type_id, micro_patients_details.days_on_antibiotic as DonAntibiotics,unhls_tests.id as testID,
+			group_concat(distinct drugs.name) as Drugs, organisms.name as IsolatedOrganism, isolated_organisms.id as isoID' )
 
-		$isolatedOrganisms = IsolatedOrganism::with(
-				'test',
-				'test.visit',
-				'test.visit.patient',
-				'test.specimen',
-				'drugSusceptibilities',
-				'drugSusceptibilities.drug',
-				'organism'
-			)->where(function($q) use ($dateFrom, $dateTo){
-				$dateTo = $dateTo . ' 23:59:59';
-				$q->where('created_at', '>=', $dateFrom);
-				$q->where('created_at', '<=', $dateTo);
-			})->orderBy('created_at', 'DESC')->get();
+				->leftjoin('unhls_visits', 'unhls_visits.id', '=', 'unhls_tests.visit_id')
+				->leftjoin('wards', 'wards.id', '=', 'unhls_visits.ward_id')
+				->leftjoin('unhls_patients', 'unhls_patients.id', '=', 'unhls_visits.patient_id')
+				->leftjoin('unhls_districts', 'unhls_districts.id', '=', 'unhls_patients.district_residence')
+				->leftjoin('micro_patients_details', 'unhls_patients.id', '=', 'micro_patients_details.patient_id')
+				->leftjoin('patient_antibiotics', 'patient_antibiotics.patient_id', '=', 'unhls_patients.id')
+				->leftjoin('drugs', 'drugs.id', '=', 'patient_antibiotics.drug_id')
+				->leftjoin('specimens', 'specimens.id', '=', 'unhls_tests.specimen_id')
+				->leftjoin('specimen_types', 'specimen_types.id', '=', 'specimens.specimen_type_id')
+				->leftjoin('isolated_organisms', 'unhls_tests.id', '=', 'isolated_organisms.test_id')
+				->leftjoin('organisms', 'organisms.id', '=', 'isolated_organisms.organism_id')
+				->leftjoin('drug_susceptibility', 'isolated_organisms.id', '=', 'drug_susceptibility.isolated_organism_id')
+				->leftjoin('drug_susceptibility_measures', 'drug_susceptibility_measures.id', '=', 'drug_susceptibility.drug_susceptibility_measure_id')
+				->where('unhls_tests.test_type_id', '=', 18)
+				->where('unhls_tests.test_status_id', '!=', UnhlsTest::REJECTED)
+				->where(function($q) use ($dateFrom, $dateTo){
+			 		$dateTo = $dateTo . ' 23:59:59';
+			 		$q->where('specimens.time_accepted', '>=', $dateFrom);
+			 		$q->where('specimens.time_accepted', '<=', $dateTo);
+				 	})->orderBy('specimens.time_accepted', 'DESC')
+				->groupBy('unhls_patients.name')
+				->groupBy('isolated_organisms.id')
+				->orderBy('specimens.time_accepted', 'DESC')
+				->get();
+
 		$content = [];
 
 		$i = 1;
-		foreach ($isolatedOrganisms as $isolatedOrganism) {
-			$content[$i]['Patient ID'] = $isolatedOrganism->test->visit->patient->ulin;
-			$content[$i]['Sex'] = $isolatedOrganism->test->visit->patient->getGender();//sex
-			$content[$i]['Age'] = $isolatedOrganism->test->visit->patient->getAge();//age
-			$content[$i]['Hospitalized for more than 2 days (48 hours) at time of specimen collection? '] = ($isolatedOrganism->test->visit->hospitalized == 1) ? 'Yes' : 'No';//48hrs
-			$content[$i]['Specimen Date'] = $isolatedOrganism->test->specimen->time_accepted;//specimen_date
-			$content[$i]['Specimen Type'] = $isolatedOrganism->test->specimen->specimenType->name;//specimen_type
-			$content[$i]['Organism'] = $isolatedOrganism->organism->name;
+		foreach ($isolatedOrganisms as $isolatedOrganism)
+		{
+						
+			$content[$i]['Date Recieved'] = substr($isolatedOrganism->Recieved,0,-9);
+			$content[$i]['Date Collected'] = substr($isolatedOrganism->collected,0,-9);
+			$content[$i]['Patient ID'] = $isolatedOrganism->number;
+			$content[$i]['Lab ID'] = $isolatedOrganism->labID;
+			$content[$i]['Patient Name'] = $isolatedOrganism->PatientName;
+			$content[$i]['Ward'] = $isolatedOrganism->Ward;
+			$content[$i]['Sex'] = ($isolatedOrganism->gender == 1) ? 'F' : 'M';//sex
+			$content[$i]['Age'] = newAge($isolatedOrganism->age);//age
+			$content[$i]['Hospitalized for more than 2 days (48 hours) at time of specimen collection?'] = ($isolatedOrganism->hospitalized == 1) ? 'Yes' : (($isolatedOrganism->hospitalized == '0') ? 'No' : '');//$hospitalized_value; tenary operator//48hrs
+			$content[$i]['On Antibiotics'] = ($isolatedOrganism->onAntibiotics == 1) ? 'Yes' : '';
+			$content[$i]['Days on Antibiotics'] = $isolatedOrganism->DonAntibiotics;
+			$content[$i]['List of Drugs'] = $isolatedOrganism->Drugs;
+			$content[$i]['Diagnosis'] = $isolatedOrganism->diagnosis;//specimen_date
+			$content[$i]['Specimen Type'] = $isolatedOrganism->SpecimenType;//specimen_type
+			$content[$i]['Admission Date'] = $isolatedOrganism->admission_date;//Admission Date
+			$content[$i]['Organism'] = $isolatedOrganism->IsolatedOrganism;
 
-			// put all antibiotic indexes with empty values
 			foreach ($drugs as $drug) {
-				$content[$i][$drug->name] = '';
+				$content[$i][$drug->name] = getIsolatedOrganismResult($isolatedOrganism->isoID, $drug->id);
 			}
-
-			// update with available values as available
-			foreach ($isolatedOrganism->drugSusceptibilities as $drugSusceptibility) {
-				$content[$i][$drugSusceptibility->drug->name] = $drugSusceptibility->drugSusceptibilityMeasure->symbol;
-			}
-			$i++;
+		$i++;		
 		}
-
+			
 		$fileName = $dateFrom.' to '.$dateTo;
 		Excel::create($fileName, function($excel) use($content) {
 			$excel->sheet('Sheet1', function($sheet) use($content) {
 				$sheet->fromArray($content);
 			});
 		})->export('xls');
+
 	}
 
 	public function quaterly_report()

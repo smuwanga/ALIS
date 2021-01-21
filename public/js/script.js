@@ -921,6 +921,16 @@ $(function(){
         });
     });
 
+    $('#collect-sample-modal').on('show.bs.modal', function(e) {
+        //get data-id attribute of the clicked element
+        var id = $(e.relatedTarget).data('sample-id');
+        var url = $(e.relatedTarget).data('url');
+        $.post(url, { id: id}).done(function(data){
+            //Show it in the modal
+            $(e.currentTarget).find('.modal-body').html(data);
+        });
+    });
+
     $("input[name=onAntibiotics]").click(function(){
         $selected = $(this).val();
         if($selected=='1')

@@ -15,7 +15,7 @@
     <table style="text-align:center;" >
             <tr>
                 <td colspan="12" style="text-align:center;">
-                    {{ @HTML::image(Config::get('kblis.organization-logo'),  Config::get('kblis.country') . trans('messages.court-of-arms'), array('width' => '70px')) }}
+                    <!-- {{ @HTML::image(Config::get('kblis.organization-logo'),  Config::get('kblis.country') . trans('messages.court-of-arms'), array('width' => '70px')) }} -->
                 </td>
             </tr>
             <tr>               
@@ -31,7 +31,7 @@
         </thead>
     </table>
 
-<table  border="0" width="100%"; style="border-bottom: 1px solid #cecfd5">
+<!-- <table  border="0" width="100%"; style="border-bottom: 1px solid #cecfd5">
     <tr>
         <td width="20%"><b>Patient Name</b></td>
         <td width="30%">{{ $patient->name }}</td>
@@ -94,5 +94,5 @@
               
         </td>
     </tr>
-</table>
+</table> -->
 @show

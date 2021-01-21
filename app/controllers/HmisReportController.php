@@ -269,7 +269,7 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	}
 
 	private function getHIVTestCounts($lab_section_id, $month){
-		$query = "select ut.test_type_id, tt.name, utr.measure_id, ut.purpose, mnm.measure_id as M2, mnm.system_name, tt.test_category_id as lab_section, count(DISTINCT ut.id) as total, SUM(case when utr.result = 'Reactive' then 1 else 0 end) as Positive, SUM(case when ut.purpose = 'hct' then 1 else 0 end) as hct, SUM(case when ut.purpose = 'smc' then 1 else 0 end) as smc, SUM(case when ut.purpose = 'pmtct' then 1 else 0 end) as pmtct FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id) INNER JOIN testtype_measures ttm ON(ttm.measure_id = utr.measure_id) INNER JOIN measure_ranges mr ON(mr.measure_id = utr.measure_id AND mr.alphanumeric = utr.result)
+		$query = "select ut.test_type_id, tt.name, utr.measure_id, ut.purpose, mnm.measure_id as M2, mnm.system_name, tt.test_category_id as lab_section, count(DISTINCT ut.id) as total, SUM(case when utr.result = 'Reactive' then 1 else 0 end) as Positive, SUM(case when ut.purpose = 'hct' then 1 else 0 end) as hct, SUM(case when ut.purpose = 'smc' then 1 else 0 end) as smc, SUM(case when ut.purpose = 'pmtct' then 1 else 0 end) as pmtct, SUM(case when ut.purpose = 'qc' then 1 else 0 end) as qc, SUM(case when ut.purpose = 'clinical_diagnosis' then 1 else 0 end) as clinical_diagnosis, SUM(case when ut.purpose = 'repeat_test' then 1 else 0 end) as repeat_test, SUM(case when ut.purpose = 'test_for_verification' then 1 else 0 end) as test_for_verification, SUM(case when ut.purpose = 'inconclusive_result' then 1 else 0 end) as inconclusive_result, SUM(case when ut.purpose = 'dna_confirmed_test' then 1 else 0 end) as dna_confirmed_test, SUM(case when ut.purpose = 'eqa' then 1 else 0 end) as eqa FROM unhls_tests ut INNER JOIN test_types tt ON(ut.test_type_id = tt.id) INNER JOIN test_categories tc ON(tc.id = tt.test_category_id) INNER JOIN unhls_test_results utr ON(utr.test_id = ut.id) INNER JOIN testtype_measures ttm ON(ttm.measure_id = utr.measure_id) INNER JOIN measure_ranges mr ON(mr.measure_id = utr.measure_id AND mr.alphanumeric = utr.result)
 		LEFT JOIN measure_name_mappings mnm ON(utr.measure_id = mnm.measure_id)
 		WHERE `ut`.`time_created` LIKE '%".$month."%'
 		GROUP BY measure_id";
@@ -413,29 +413,28 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getHCTCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('hctcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
+		$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
+		$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_h'] = $row->hct;
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_h'] = $row->hct;
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_h'] = $row->hct;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_h'] = $row->hct;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -447,29 +446,28 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function geteMTCTCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('eMTCTcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;
+		$test_type_counts['determine_p'] = 0;
+		$test_type_counts['statpak'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_p'] = $row->pmtct; 
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_p'] = $row->pmtct; 
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_p'] = $row->pmtct; 
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; 
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total;
+	 			$test_type_counts['oraquick_p'] = $row->pmtct; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -481,29 +479,27 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getclinicalDiagnosisCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('clinicalDiagnosiscount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_cd'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_cd'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_cd'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_cd'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_cd'] = 0;
+		$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total;
+	 			$test_type_counts['determine_cd'] = $row->clinical_diagnosis; 
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_cd'] = $row->clinical_diagnosis; 
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_cd'] = $row->clinical_diagnosis;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_cd'] = $row->clinical_diagnosis; 
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_cd'] = $row->clinical_diagnosis; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -515,29 +511,28 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getSMCCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('SMCcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_s'] = 0;
+		$test_type_counts['statpak'] = 0;
+		$test_type_counts['statpak_s'] = 0;$test_type_counts['sdbioline'] = 0;$test_type_counts['sdbioline_s'] = 0;
+		$test_type_counts['hiv_syphilis_duo'] = 0;
+		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_s'] = $row->smc;
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_s'] = $row->smc;
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_s'] = $row->smc;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_s'] = $row->smc;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -549,29 +544,27 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getrepeatTestCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('repeatTestcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_rt'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_rt'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_rt'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_rt'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_rt'] = 0;
+		$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_rt'] = $row->repeat_test; 
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_rt'] = $row->repeat_test; 
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_rt'] = $row->repeat_test; 
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_rt'] = $row->repeat_test;
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_rt'] = $row->repeat_test; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -583,29 +576,26 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getVerificationTestCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('VerificationTestcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_tv'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_tv'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_tv'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_tv'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_tv'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_tv'] = $row->test_for_verification; 
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_tv'] = $row->test_for_verification; 
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_tv'] = $row->test_for_verification; 
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_tv'] = $row->test_for_verification; 
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_tv'] = $row->test_for_verification; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -617,29 +607,27 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getinconclusiveCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('inconclusivecount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_ir'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_ir'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_ir'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_ir'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_ir'] = 0;
+		$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_ir'] = $row->inconclusive_result;
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_ir'] = $row->inconclusive_result;
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_ir'] = $row->inconclusive_result;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total;
+	 			$test_type_counts['hiv_syphilis_duo_ir'] = $row->inconclusive_result;
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_ir'] = $row->inconclusive_result; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -651,29 +639,26 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getdnaConfirmedTestCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('dnaConfirmedTestcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_dct'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_dct'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_dct'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_dct'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_dct'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_dct'] = $row->dna_confirmed_test;
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_dct'] = $row->dna_confirmed_test;
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_dct'] = $row->dna_confirmed_test;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_dct'] = $row->dna_confirmed_test; 
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_dct'] = $row->dna_confirmed_test;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -685,29 +670,26 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getIQCCounts($month){
 		$test_type_ids = $this->getTestTypeIDs('IQCcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_qc'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_qc'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_qc'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_qc'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_qc'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total; 
+	 			$test_type_counts['determine_qc'] = $row->qc; 
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_qc'] = $row->qc; 
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_qc'] = $row->qc; 
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_qc'] = $row->qc; 
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_qc'] = $row->qc; 
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}
@@ -719,29 +701,26 @@ WHERE `v`.`created_at` LIKE '%".$month."%' ";
 	private function getEQACounts($month){
 		$test_type_ids = $this->getTestTypeIDs('EQAcount');
 		$rows = $this->getHIVTestCounts($test_type_ids['test_category_id'],$month);
-		$test_type_counts['determine'] = 0;$test_type_counts['determine_h'] = 0;$test_type_counts['determine_s'] = 0;
-		$test_type_counts['determine_p'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_h'] = 0;
-		$test_type_counts['statpak_s'] = 0;$test_type_counts['statpak_p'] = 0;$test_type_counts['sdbioline'] = 0;
-		$test_type_counts['sdbioline_h'] = 0;$test_type_counts['sdbioline_s'] = 0;$test_type_counts['sdbioline_p'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_h'] = 0;
-		$test_type_counts['hiv_syphilis_duo_s'] = 0;$test_type_counts['hiv_syphilis_duo_p'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_h'] = 0;$test_type_counts['oraquick_s'] = 0;$test_type_counts['oraquick_p'] = 0;$test_type_counts['others'] = 0;
+		$test_type_counts['determine'] = 0;$test_type_counts['determine_eqa'] = 0;$test_type_counts['statpak'] = 0;$test_type_counts['statpak_eqa'] = 0;$test_type_counts['sdbioline'] = 0;
+		$test_type_counts['sdbioline_eqa'] = 0;$test_type_counts['hiv_syphilis_duo'] = 0;$test_type_counts['hiv_syphilis_duo_eqa'] = 0;$test_type_counts['oraquick'] = 0;$test_type_counts['oraquick_eqa'] = 0;$test_type_counts['others'] = 0;
 		
 	 	foreach($rows as $row){
 	 		//dd($row);
 	 		if($row->system_name == $test_type_ids['determine']){
-	 			$test_type_counts['determine'] = $row->total; $test_type_counts['determine_h'] = $row->hct;
-	 			$test_type_counts['determine_p'] = $row->pmtct; $test_type_counts['determine_s'] = $row->smc;
+	 			$test_type_counts['determine'] = $row->total;
+	 			$test_type_counts['determine_eqa'] = $row->eqa;
 	 		}else if($row->system_name == $test_type_ids['statpak']){
-	 			$test_type_counts['statpak'] = $row->total; $test_type_counts['statpak_h'] = $row->hct;
-	 			$test_type_counts['statpak_p'] = $row->pmtct; $test_type_counts['statpak_s'] = $row->smc;
+	 			$test_type_counts['statpak'] = $row->total; 
+	 			$test_type_counts['statpak_eqa'] = $row->eqa;
 	 		}else if($row->system_name == $test_type_ids['sdbioline']){
-	 			$test_type_counts['sdbioline'] = $row->total; $test_type_counts['sdbioline_h'] = $row->hct;
-	 			$test_type_counts['sdbioline_p'] = $row->pmtct; $test_type_counts['sdbioline_s'] = $row->smc;
+	 			$test_type_counts['sdbioline'] = $row->total; 
+	 			$test_type_counts['sdbioline_eqa'] = $row->eqa;
 	 		}else if($row->system_name == $test_type_ids['hiv_syphilis_duo']){
-	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; $test_type_counts['hiv_syphilis_duo_h'] = $row->hct;
-	 			$test_type_counts['hiv_syphilis_duo_p'] = $row->pmtct; $test_type_counts['hiv_syphilis_duo_s'] = $row->smc;
+	 			$test_type_counts['hiv_syphilis_duo'] = $row->total; 
+	 			$test_type_counts['hiv_syphilis_duo_eqa'] = $row->eqa;
 	 		}else if($row->system_name == $test_type_ids['oraquick']){
-	 			$test_type_counts['oraquick'] = $row->total; $test_type_counts['oraquick_h'] = $row->hct;
-	 			$test_type_counts['oraquick_p'] = $row->pmtct; $test_type_counts['oraquick_s'] = $row->smc;
+	 			$test_type_counts['oraquick'] = $row->total; 
+	 			$test_type_counts['oraquick_eqa'] = $row->eqa;
 	 		}else{
 	 			$test_type_counts['others'] = $row->total;
 	 		}

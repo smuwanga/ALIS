@@ -27,6 +27,10 @@
 				{{ Form::text('name', Input::old('name'), array('class' => 'form-control')) }}
 			</div>
 			<div class="form-group">
+				{{ Form::label('parentId','Standard name') }}
+				{{ Form::select('parentId', array(0 => '')+$standardnames->lists('standard_name', 'id'), Input::old('parentId'), array('class' => 'form-control')) }}
+			</div>
+			<div class="form-group">
 				{{ Form::label('description', trans('messages.description')) }}
 				{{ Form::textarea('description', Input::old('description'), 
 					array('class' => 'form-control', 'rows' => '2')) }}

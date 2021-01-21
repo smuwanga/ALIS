@@ -21,14 +21,15 @@
 					{{ HTML::ul($errors->all()) }}
 				</div>
 			@endif
-			{{ Form::open(array('url' => 'microbiology', 'id' => 'form-create-micro')) }}
+			{{ Form::open(array('url' => 'microbio', 'id' => 'form-create-micro')) }}
 		<input type="hidden" name="_token" value="{{ Session::token() }}"><!--to be removed function for csrf_token -->
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
 						
-			<div class="form-pane panel panel-default">			
+			<fieldset class="scheduler-border">
+		    	<legend class="scheduler-border">Patient Information</legend>		
 				<div class="col-md-6">
 					<div class="form-group">
 						{{ Form::label('patient_name','Patient Name', array('text-align' => 'right', 'class' => 'required')) }}
@@ -53,10 +54,9 @@
 						<span class="input-tag">{{trans('messages.female')}}</span></div>
 					</div>
 					<div class="form-group">
-						{{ Form::label('nationality', trans('Nationality')) }}
-						{{ Form::select('nationality', [' ' => '--- Select Nationality ---',
-							'0' => trans('National'),'1' => trans('Refugee'),'2' => trans('Foreigner')], null,
-						array('class' => 'form-control')) }}
+						{{ Form::label('nationality', trans('Nationality'), array('class' => 'required')) }}
+						{{ Form::select('nationality',  array_merge(array(' ' => '--- Select Nationality ---'), $nation), 
+						Input::get('nationality'),['class' => 'form-control'])  }}
 					</div>
 				</div>
 				<div class="col-md-12">
@@ -82,31 +82,23 @@
 						</div>
 						<div class="form-group">
 							{{ Form::label('visit_type', trans("messages.visit-type")) }}
-							{{ Form::select('visit_type', [' ' => '--- Select visit type ---',
-							'0' => trans("messages.out-patient"),'1' => trans("messages.in-patient"),'2' => trans("messages.refferrals")], null,
-							 array('class' => 'form-control')) }}
-						</div>
-						<div class="form-group">
-							{{ Form::label('facility','Facility Name:') }}
-							{{ Form::select('facility', $facilities, Input::get('facility'), array('class' => 'form-control')) }}
-						</div>
+							{{ Form::select('visit_type',array_merge(array(' ' => '--- Select visit type  ---'), $visitType), 
+							Input::get('visit_type'),['class' => 'form-control'])  }}
+						</div>	
 				</div>
 				<div class="col-md-6">	
 						<div class="form-group">
 							{{ Form::label('ward','Ward/Clinic/Health Unit') }}
-							{{ Form::select('ward', $ward, Input::get('ward_id'), array('class' => 'form-control')) }}
-						</div>				
+							{{ Form::select('ward', $ward, Input::get('ward'), array('class' => 'form-control')) }}
+						</div>
 						<div class="form-group">
-							{{ Form::label('bed_no','Bed No:', array('text-align' => 'right')) }}
-							{{ Form::text('bed_no', Input::old('bed_no'), array('class' => 'form-control')) }}
-						</div>						
-						<div class="form-group">
-							{{ Form::label('facility_lab_number','Facility Lab No:', array('text-align' => 'right')) }}
-							{{ Form::text('facility_lab_number', Input::old('facility_lab_number'), array('class' => 'form-control')) }}
-						</div>					
+							{{ Form::label('patient_number', trans('messages.patient-number'), array('class' => 'required')) }}
+							{{ Form::text('patient_number', Input::old('patient_number'), array('class' => 'form-control')) }}
+						</div>							
 				</div>
-			</div>
-			<div class="form-pane panel panel-default">	
+			</fieldset>
+			<fieldset class="scheduler-border">
+		    	<legend class="scheduler-border">Resident Details</legend>	
 					<div class="col-md-6">
 						<div class="form-group">
 							{{ Form::label('district_residence', 'District of Residence') }}
@@ -150,11 +142,10 @@
 							{{ Form::text('contact_next_kin', Input::old('contact_next_kin'), array('class' => 'form-control')) }}
 						</div>
 					</div>
-			</div>
-			<div class="panel-heading">
-				<h3 class="panel-title"><b>{{"Clinical Information"}}</b></h3>
-			</div>
-				<div class="form-pane panel panel-default">								
+			</fieldset>
+
+			<fieldset class="scheduler-border">
+		    	<legend class="scheduler-border">Clinical Information</legend>							
 					<div class="col-md-6">
 						<div class="form-group">
 							{{ Form::label('admission_date', 'Admission Date') }}
@@ -213,24 +204,24 @@
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-							{{ Form::label('clinical_notes', 'Clinical Notes') }}
+							{{ Form::label('clinical_notes', 'Provisional diagnosis') }}
 							{{Form::textarea('clinical_notes', Input::old('physician'), array('class' => 'form-control', 'rows'=>'2', 'placeholder' => 'Provisional diagnosis'))}}
 							</div>
 						</div>
-				</div>
-				<div class="panel-heading">
-					<h3 class="panel-title">{{"Specimen Details"}}</h3>
-				</div>
-						<div class="col-md-6">
+				</fieldset>
+			
+						<!-- <div class="col-md-6">
 							<div class="form-group">
 							{{ Form::label('testpurpose', 'Purpose of Test') }}
 							{{Form::select('testpurpose', $testpurpose, Input::old('testpurpose'), ['class' => 'form-control']) }}
 							</div>
-						</div>
+						</div> -->
+				<fieldset class="scheduler-border">
+		    	<legend class="scheduler-border">Specimen Details</legend>		
 					<div class="form-pane panel panel-default">
 						<div class="col-md-6">
 							<div class="form-group">
-								{{Form::label('specimen_type', 'Sample Type')}}
+								{{Form::label('specimen_type', 'Sample Type', array('class' => 'required'))}}
 								{{ Form::select('specimen_type', $specimenType,
 									Input::get('specimenType'),	['class' => 'form-control specimen-type']) }}
 							</div>
@@ -284,6 +275,7 @@
 						    </div>
 					    </div>
 				</div>
+			</fieldset>
 				<div class="form-group actions-row">
 						{{ Form::button("<span class='glyphicon glyphicon-save'></span> ".trans('messages.save-test'),
 						['class' => 'btn btn-primary', 'onclick' => 'submit()', 'alt' => 'save_new_test']) }}

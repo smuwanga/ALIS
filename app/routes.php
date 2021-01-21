@@ -52,7 +52,7 @@ Route::group(array("before" => "guest"), function()
         "as" => "user.login",
         "uses" => "UserController@loginAction"
     ));
-   
+
    Route::any('/settings', array(
         "as" => "facility.settings",
         "uses" => "UserController@configureFacilitySettings"
@@ -100,7 +100,7 @@ Route::group(array("before" => "auth"), function()
 
     //Unhls patient routes start here
     Route::resource('unhls_patient', 'UnhlsPatientController');
-   
+
 
     Route::get("/unhls_patient/{id}/delete", array(
         "as"   => "unhls_patient.delete",
@@ -162,6 +162,11 @@ Route::group(array("before" => "auth"), function()
         "as"   => "poc.download",
         "uses" => "PocController@download"
     ));
+
+    Route::get("/pocoldform", array(
+  "as"   => "poc.oldform",
+  "uses" => "PocController@oldForm"
+));
 
     Route::get("unhls_test/importPoc", array(
         "as" => "unhls_test.importPoc",
@@ -448,7 +453,7 @@ Route::group(array("before" => "auth"), function()
         "before" => "checkPerms:edit_test_results",
         "as"   => "unhls_test.edit",
         "uses" => "UnhlsTestController@edit"
-    )); 
+    ));
     Route::post("/unhls_test/{test}/saveresults", array(
         "before" => "checkPerms:edit_test_results",
         "as"   => "unhls_test.saveResults",
@@ -463,6 +468,12 @@ Route::group(array("before" => "auth"), function()
         "as"   => "test.viewDetails",
         "uses" => "TestController@viewDetails"
     ));
+    Route::get("/unhls_test/{test}/collectsample", array( //This is meant to use a normal blade page
+        "as" => "unhls_test.collectSample",
+        "uses" => "UnhlsTestController@collectSpecimen"));
+     Route::post("/unhls_test/collectsamplemodal", array( //This is the route used via ajax call to load data in modal
+        "as" => "unhls_test.collectSampleModal",
+        "uses" => "UnhlsTestController@collectSpecimenModal"));
     Route::post("unhls_test/collectspecimen", array(
         "as" => "unhls_test.collectSpecimen",
         "uses" => "UnhlsTestController@acceptSpecimen"));
@@ -601,6 +612,10 @@ Route::group(array("before" => "auth"), function()
             "as" => "resetulin.reset",
             "uses" => "UuidGeneratorController@reset"
         ));
+        Route::post('/specimencollection', array(
+            "as" => "resetulin.specimen_collection",
+            "uses" => "UuidGeneratorController@specimen_collection"
+        ));
     });
 
     //  Check if able to manage reports
@@ -633,7 +648,7 @@ Route::group(array("before" => "auth"), function()
             "as" => "reports.patient.visit.report",
             "uses" => "ReportController@viewPatientVisitRequestForm"
         ));
-        
+
         Route::any("/patientvisitreport/recall/{id}", array(
             "as" => "reports.patient.visit.report.recall",
             "uses" => "ReportController@recallPatientVisitReport"

@@ -34,11 +34,12 @@ class TestTypeController extends \BaseController {
 		$testcategory = TestCategory::all();
         $measuretype = MeasureType::all()->sortBy('id');
         $organisms = Organism::orderBy('name')->get();
-
+        $standardnames = TestNameMapping::all();
 		//Create TestType
 		return View::make('testtype.create')
 					->with('testcategory', $testcategory)
 					->with('measures', $measures)
+       				->with('standardnames', $standardnames)
        				->with('measuretype', $measuretype)
 					->with('specimentypes', $specimentypes)
 					->with('organisms', $organisms);
@@ -71,6 +72,7 @@ class TestTypeController extends \BaseController {
 			// store 
 			$testtype = new TestType;
 			$testtype->name = trim(Input::get('name'));
+			// $testtype->parentId = Input::get('parentId');
 			$testtype->description = Input::get('description');
 			$testtype->test_category_id = Input::get('test_category_id');
 			$testtype->targetTAT = Input::get('targetTAT');
@@ -129,13 +131,14 @@ class TestTypeController extends \BaseController {
 		$specimentypes = SpecimenType::orderBy('name')->get();
 		$testcategory = TestCategory::all();
 		$organisms = Organism::orderBy('name')->get();
-
+		$standardnames = TestNameMapping::all();
 		//Open the Edit View and pass to it the $testtype
 		return View::make('testtype.edit')
 					->with('testtype', $testtype)
 					->with('testcategory', $testcategory)
 					->with('measures', $measures)
        				->with('measuretype', $measuretype)
+       				->with('standardnames', $standardnames)
 					->with('specimentypes', $specimentypes)
 					->with('organisms', $organisms);
 	}
@@ -167,6 +170,7 @@ class TestTypeController extends \BaseController {
 			$testtype->name = trim(Input::get('name'));
 			$testtype->description = Input::get('description');
 			$testtype->test_category_id = Input::get('test_category_id');
+			$testtype->parentId = Input::get('parentId');
 			$testtype->targetTAT = Input::get('targetTAT');
 			$testtype->targetTAT_unit = Input::get('targetTAT_unit');
 			$testtype->prevalence_threshold = Input::get('prevalence_threshold');

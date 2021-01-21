@@ -221,7 +221,7 @@ class UnhlsVisit extends Eloquent
 			});
 		}
 
-		$visits = $visits->orderBy('created_at', 'ASC');
+		$visits = $visits->orderBy('id', 'DESC');
 
 		return $visits;
 	}

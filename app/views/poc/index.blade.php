@@ -36,18 +36,25 @@
 		<span class="glyphicon glyphicon-user"></span>
 		POC / EID Patient List
 		<div class="panel-btn">
-			<a class="btn btn-sm btn-info" href="{{ URL::route('poc.create') }}">
+			<a class="btn btn-sm btn-success" href="{{ URL::route('poc.create') }}">
 				<span class="glyphicon glyphicon-plus-sign"></span>
-				{{trans('messages.new-patient')}}
+				Register EID Infant using NEW Form
 			</a>
 		</div>
+
+		<div class="panel-btn">
+			<a class="btn btn-sm btn-danger" href="{{ URL::route('poc.oldform') }}">
+				<span class="glyphicon glyphicon-plus-sign"></span>
+				Register EID Infant using OLD Form
+			</a>
+		</div>
+
 	</div>
 	<div class="panel-body" style="overflow-x:auto;">
 		<table class="table table-striped table-bordered table-hover table-condensed search-table">
 			<thead>
 				<tr>
 					<th>#</th>
-					<th>ULIN</th>
 					<th>Sample ID</th>
 					<th>Infant Name</th>
 					<th>Gender</th>
@@ -69,7 +76,6 @@
 
 				<tr>
 					<td class="text-center">{{ $row }}</td>
-					<td>{{ $patient->ulin }}</td>
 					<td>{{ $patient->sample_id }}</td>
 					<td>{{ $patient->infant_name }}</td>
 					<td>{{ $patient->gender }}</td>
@@ -82,7 +88,7 @@
 					@endif
 					<td>{{ $patient->results}}</td>
 					<td>{{ $patient->test_date}}</td>
-				
+
 
 					<td>
 

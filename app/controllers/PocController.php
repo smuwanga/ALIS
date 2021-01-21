@@ -30,7 +30,7 @@ class PocController extends \BaseController {
 		}
 
 		// Load the view and pass the patients
-		$antenatal = array('0'=>'Lifelong ART', '1' => 'No ART', '2' => 'UNKNOWN');
+		$antenatal = array('1'=>'Lifelong ART', '2' => 'No ART', '3' => 'UNKNOWN');
 		return View::make('poc.index')
 		->with('antenatal',$antenatal)
 		// ->with('facility',$facility)
@@ -47,18 +47,27 @@ class PocController extends \BaseController {
 	{
 		//Create patients
 		$hiv_status = array('0' => 'Positive', '1' => 'Negative', '2' => 'Unknown');
-		$antenatal= array('0'=>'Lifelong ART', '1' => 'No ART', '2' => 'UNKNOWN');
+		$antenatal= array('1'=>'Lifelong ART', '2' => 'No ART', '3' => 'UNKNOWN');
 		// $facility = Hubs::orderBy('name','ASC')
 		// ->lists('name','id');
 		// $district = District::orderBy('name','ASC')
 		// ->lists('name', 'id');
-		$ulinFormat = AdhocConfig::where('name','ULIN')->first()->getULINFormat();
 
 		return View::make('poc.create')
 		->with('hiv_status', $hiv_status)
 		// ->with('facility',$facility)
 		// ->with('district',$district)
-		->with('ulinFormat', $ulinFormat)
+			->with('antenatal', $antenatal);
+	}
+
+	public function oldForm()
+	{
+		//Create patients
+		$hiv_status = array('1' => 'Positive', '2' => 'Negative', '3' => 'Unknown');
+		$antenatal= array('1'=>'Lifelong ART', '2' => 'No ART', '3' => 'UNKNOWN');
+
+		return View::make('poc.oldRequestForm')
+		->with('hiv_status', $hiv_status)
 			->with('antenatal', $antenatal);
 	}
 
@@ -75,9 +84,15 @@ class PocController extends \BaseController {
 			'infant_name' => 'required',
 			'age'       => 'required',
 			'gender' => 'required',
-			'entry_point' => 'required' ,
+			'entry_point' => 'required',
+			'collection_date' => 'required',
+			'sample_id' => 'required|unique:poc_tables,sample_id'
 		);
-		$validator = Validator::make(Input::all(), $rules);
+		// $request =Request::all();
+		// dd($x['infant_name']);
+
+		$validator = Validator::make(Request::all(), $rules);
+		// dd($validator);
 
 		if ($validator->fails()) {
 
@@ -85,45 +100,53 @@ class PocController extends \BaseController {
 		} else {
 			// store
 
-
-
 			$patient = new POC;
-			// $patient->district_id = \Config::get('constants.DISTRICT_ID');
-			// $patient->facility_id = \Config::get('constants.FACILITY_ID');
-			$patient->gender	= Input::get('gender');
-			$patient->age	= Input::get('age');
-			$patient->exp_no = Input::get('exp_no');
-			$patient->caretaker_number	= Input::get('caretaker_number');
-			$patient->admission_date	= Input::get('admission_date');
-			$patient->breastfeeding_status	= Input::get('breastfeeding_status');
-			$patient->entry_point	= Input::get('entry_point');
-			$patient->mother_name	= Input::get('mother_name');
+
 			$patient->infant_name	= Input::get('infant_name');
-			$patient->provisional_diagnosis	= Input::get('provisional_diagnosis');
+			$patient->exp_no = Input::get('exp_no');
+			$patient->age	= Input::get('age');
+			$patient->gender	= Input::get('gender');
+			$patient->caretaker_number	= Input::get('caretaker_number');
+			$patient->contrimoxazole	= Input::get('contrimoxazole');
+			$patient->delivery_details	= Input::get('delivery_details');
 			$patient->infant_pmtctarv	= Input::get('infant_pmtctarv');
-			$patient->mother_hiv_status	= Input::get('mother_hiv_status');
+			$patient->entry_point	= Input::get('entry_point');
+			$patient->other_entry_point	= Input::get('other_entry_point');
 			$patient->collection_date	= Input::get('collection_date');
+			$patient->sample_id	= Input::get('sample_id');
 			$patient->pcr_level	= Input::get('pcr_level');
+			$patient->non_routine	= Input::get('non_routine');
+			$patient->feeding_status	= Input::get('feeding_status');
+			$patient->mother_hts	= Input::get('mother_hts');
+			$patient->mother_art = Input::get('mother_art');
+			$patient->mother_nin = Input::get('mother_nin');
 			$patient->pmtct_antenatal	= Input::get('pmtct_antenatal');
 			$patient->pmtct_delivery	= Input::get('pmtct_delivery');
 			$patient->pmtct_postnatal	= Input::get('pmtct_postnatal');
-			$patient->sample_id	= Input::get('sample_id');
-			$patient->other_entry_point	= Input::get('other_entry_point');
-			$patient->given_contrimazole	= Input::get('given_contrimazole');
-			$patient->delivered_at	= Input::get('delivered_at');
-			$patient->nin	= Input::get('nin');
-			$patient->feeding_status	= Input::get('feeding_status');
-			// $patient->facility	= Input::get('facility');
-			// $patient->district	= Input::get('district');
 			$patient->created_by = Auth::user()->name;
 
-				$patient->save();
-				
+			$patient->admission_date	= Input::get('admission_date');
+			$patient->breastfeeding_status	= Input::get('breastfeeding_status');
+			$patient->mother_name	= Input::get('mother_name');
+			$patient->provisional_diagnosis	= Input::get('provisional_diagnosis');
+			$patient->infant_pmtctarv	= Input::get('infant_pmtctarv');
+			$patient->mother_hiv_status	= Input::get('mother_hiv_status');
 
+			// $patient->district_id = \Config::get('constants.DISTRICT_ID');
+			// $patient->facility_id = \Config::get('constants.FACILITY_ID');
+			// $patient->facility	= Input::get('facility');
+			// $patient->district	= Input::get('district');
+
+			try{
+
+				$patient->save();
 				return Redirect::route('poc.index')
 				->with('message', 'Successfully saved patient information:!');
 
-			// redirect
+			}catch(QueryException $e){
+				Log::error($e);
+				return Response::view('poc.error', array(), 404);
+			}
 		}
 	}
 	/**
@@ -233,10 +256,6 @@ class PocController extends \BaseController {
 			$patient->pmtct_delivery	= Input::get('pmtct_delivery');
 			$patient->pmtct_postnatal	= Input::get('pmtct_postnatal');
 			$patient->sample_id	= Input::get('sample_id');
-			$patient->given_contrimazole	= Input::get('given_contrimazole');
-			$patient->delivered_at	= Input::get('delivered_at');
-			$patient->nin	= Input::get('nin');
-			$patient->feeding_status	= Input::get('feeding_status');
 			$patient->save();
 
 			// redirect
@@ -370,48 +389,6 @@ $result->equipment_used = Input::get('equipment_used');
 		}
 	}
 
-	public function upload(){
-
-		$sql = "select r.id as result_id, patient_number, p.name as patient_name, dob, gender, tt.name as test_type, r.time_entered as test_date,result from unhls_test_results r
-		left join unhls_tests t on r.test_id=t.id
-		left join test_types tt on t.test_type_id=tt.id
-		left join unhls_visits v on t.visit_id=v.id
-		left join unhls_patients p on v.patient_id=p.id where measure_id = 168 && uploaded=0";
-
-	 if(!$sock = @fsockopen('www.google.com', 80))
-	{
-	return View::make('user.503');
-	}
-	else
-	{
-
-		$records = DB::select($sql);
-		foreach ($records as $r) {
-			$url_data = $this->arr2str((array)$r);
-			$this->send($url_data);
-			$update_sql = "update unhls_test_results set uploaded=1 where id=$r->result_id";
-			DB::update($update_sql);
-		}
-	}
-
-		//return $this->send($url_data);
-		return View::make('user.thanks');
-	}
-
-	private function send($txt){
-
-		$f = \Config::get('constants.FACILITY_NAME');
-		$command = "curl -X GET 'https://www.cphluganda.org/alis_api/?facility_id=460&$txt'";
-		exec($command);
-	}
-
-	private function arr2str($arr, $glue="&"){
-		
-		$arr2 = array_map(function($k, $v) { return "$k=".urlencode($v); }, array_keys($arr), array_values($arr));
-		return implode($glue, $arr2);
-	}
-
-
 	private function csv_download($fro, $to){
 		$patients = POC::leftjoin('poc_results as pr', 'pr.patient_id', '=', 'poc_tables.id')
 						->select('poc_tables.*','pr.results', 'pr.test_date')
@@ -475,24 +452,6 @@ $result->equipment_used = Input::get('equipment_used');
 		}
 		fclose($output);
 
-	}
-
-	public function dataPull(){
-
-		$ch = curl_init();
-    	$headers = array(
-		    'Content-type: application/json'
-		);
-		curl_setopt($ch, CURLOPT_URL, "http://127.0.0.1:8080/validate_patient");
-		// SSL important
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-		$response = curl_exec($ch);
-		curl_close($ch);
-		$unique_id = json_decode($response, true);
-		\Log::info($unique_id);
 	}
 
 	/**

@@ -13,7 +13,7 @@ class FinalReportPdf extends TCPDF {
 		}*/
 
 		$this->writeHTML(View::make('finalReportHeader',$this->getTestRequestInformation()), true, false, true, false, '');
-		$this->SetMargins(PDF_MARGIN_LEFT, 80, PDF_MARGIN_RIGHT);
+		$this->SetMargins(PDF_MARGIN_LEFT, 55, PDF_MARGIN_RIGHT);
 
 		
 	}
@@ -22,13 +22,13 @@ class FinalReportPdf extends TCPDF {
 		$now = new DateTime();
 		$printTime = $now->format('Y-m-d H:i');
 		$style = array(
-	'border' => true,
-	'vpadding' => 'auto',
-	'hpadding' => 'auto',
-	'fgcolor' => array(0,0,0),
-	'bgcolor' => false, //array(255,255,255)
-	'module_width' => 1, // width of a single module in points
-	'module_height' => 1 // height of a single module in points
+		'border' => true,
+		'vpadding' => 'auto',
+		'hpadding' => 'auto',
+		'fgcolor' => array(0,0,0),
+		'bgcolor' => false, //array(255,255,255)
+		'module_width' => 1, // width of a single module in points
+		'module_height' => 1 // height of a single module in points
      );  
 		$codes = $this->test_request_information['patient']['patient_number'];
 		if(empty($codes)){

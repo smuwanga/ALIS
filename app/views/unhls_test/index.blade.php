@@ -185,6 +185,18 @@
                                 <span class="glyphicon glyphicon-eye-open"></span>
                                 {{trans('messages.view-details')}}
                             </a>
+                        @if ($test->specimen->isNotCollected())
+                            @if(Auth::user()->can('accept_test_specimen'))
+                                <a class="btn btn-sm btn-success" 
+                                    href="#collect-sample-modal"
+                                    data-toggle="modal" data-url="{{ URL::route('unhls_test.collectSampleModal') }}" data-sample-id="{{$test->specimen->id}}" 
+                                    data-target="#collect-sample-modal"
+                                    title="Collect Sample">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                    {{trans('Collect Sample')}}
+                                </a>
+                            @endif
+                        @endif 
                         @if ($test->isNotReceived()) 
                             @if(Auth::user()->can('accept_test_specimen'))
                             <!-- todo: udate this to operate as that on the queue, if possible -->
@@ -424,6 +436,32 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal /#accept-specimen-modal-->
 
+    <div class="modal fade" id="collect-sample-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        {{ Form::open(array('route' => 'unhls_test.collectSpecimenAction')) }}
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">{{trans('messages.close')}}</span>
+            </button>
+            <h4 class="modal-title">
+                <span class="glyphicon glyphicon-ok-circle"></span>
+                {{'Collect Sample'}}</h4>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+            {{ Form::button("<span class='glyphicon glyphicon-save'></span> ".trans('messages.submit'),
+                array('class' => 'btn btn-primary', 'data-dismiss' => 'modal', 'onclick' => 'submit()')) }}
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+                {{trans('messages.cancel')}}</button>
+          </div>
+        {{ Form::close() }}
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal /#collect-specimen-modal-->
+    
     <!-- OTHER UI COMPONENTS -->
     <div class="hidden pending-test-not-collected-specimen">
         <div class="container-fluid">

@@ -219,10 +219,10 @@
 							<tr>
 								<td width="100%">
 									<b>Equipment/Technique used:</b> 
-									@if(!is_null($test->instrument_id) || $test->instrument_id == '0')
-									{{$test->equipment->name}}
-									@elseif(!is_null($test->method_used))
+									@if(is_null($test->instrument_id) || $test->instrument_id == '0')
 									{{$test->method_used}}
+									@elseif(is_null($test->method_used))
+									{{$test->equipment->name}}
 									@else
 									@endif
 								</td> 

@@ -24,7 +24,7 @@
 							@endif
 
 							@if(Auth::user()->can('verify_test_results'))
-								@if(!$test->isVerified() && Auth::user()->id != $test->tested_by)
+								@if(!$test->isVerified() && !$test->isApproved())
 								<a class="btn btn-sm btn-success" href="{{ URL::route('test.verify', array($test->id)) }}">
 									<span class="glyphicon glyphicon-thumbs-up"></span>
 									{{trans('messages.verify')}}
@@ -47,22 +47,22 @@
 							@if(Auth::user()->can('view_reports'))
 							    @if($test->isApproved() || $test->specimenIsRejected())
 								<a class="btn btn-sm btn-default"
-								href="{{ URL::to('patient_final_report/'.$test->visit->patient->id.'/'.$test->visit->id ) }}"
+								href="{{ URL::to('patient_final_report/'.$test->visit->patient->id.'/'.$test->visit->id ) }}" target="_blank"
 								>
 									<span class="glyphicon glyphicon-eye-open"></span>
 									{{trans('messages.view-final-report')}}
 								</a>
-								<a class="btn btn-sm btn-default" href="{{ URL::to('patientrequestform/' . $test->visit->id) }}" >
+								<a class="btn btn-sm btn-default" href="{{ URL::to('patientrequestform/' . $test->visit->id) }}"  target="_blank" >
 								<span class="glyphicon glyphicon-eye-open"></span>
 								Request Form
 								</a>
 								
 								@elseif( $test->isVerified() && Auth::user()->can('verify_test_results') || $test->specimenIsRejected())
-								<a class="btn btn-sm btn-default" href="{{ URL::to('patient_interim_report/'.$test->visit->patient->id.'/'.$test->visit->id ) }}">
+								<a class="btn btn-sm btn-default" href="{{ URL::to('patient_interim_report/'.$test->visit->patient->id.'/'.$test->visit->id ) }}"  target="_blank">
 									<span class="glyphicon glyphicon-eye-open"></span>
 									{{trans('messages.view-interim-report')}}
 								</a>
-								<a class="btn btn-sm btn-default" href="{{ URL::to('patientrequestform/' . $test->visit->id) }}" >
+								<a class="btn btn-sm btn-default" href="{{ URL::to('patientrequestform/' . $test->visit->id) }}"  target="_blank">
 								<span class="glyphicon glyphicon-eye-open"></span>
 								Request Form
 								</a>

@@ -3074,71 +3074,71 @@ h6 {
       <td class="c64" colspan="1" rowspan="1"><p class="c6"><span class="c1">84. Determine</span></p></td>
       <td class="c57" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$hct_test['determine_h']}}</span></p></td>
       <td class="c19" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$emtct_test['determine_p']}}</span></p></td>
-      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['determine']}}</span></p></td>
+      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['determine_cd']}}</span></p></td>
       <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$smc_test['determine_s']}}</span></p></td>
-      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['determine']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['determine']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['determine']}}</span></p></td>
-      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['determine']}}</span></p></td>
-      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['determine']}}</span></p></td>
-      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['determine']}}</span></p></td>
-      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['determine'] + $iqc_test['determine'] + $dna_confirmatory_test['determine'] + $inconclusive_test['determine'] + $verification_test['determine'] + $repeat_test['determine'] + $smc_test['determine_s'] + $clinical_diagnosis_test['determine'] + $emtct_test['determine_p'] + $hct_test['determine_h']}}</span></p></td>
+      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['determine_rt']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['determine_tv']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['determine_ir']}}</span></p></td>
+      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['determine_dct']}}</span></p></td>
+      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['determine_qc']}}</span></p></td>
+      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['determine_eqa']}}</span></p></td>
+      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['determine_eqa'] + $iqc_test['determine_qc'] + $dna_confirmatory_test['determine_dct'] + $inconclusive_test['determine_ir'] + $verification_test['determine_tv'] + $repeat_test['determine_rt'] + $smc_test['determine_s'] + $clinical_diagnosis_test['determine_cd'] + $emtct_test['determine_p'] + $hct_test['determine_h']}}</span></p></td>
     </tr>
     <tr class="c17">
       <td class="c64" colspan="1" rowspan="1"><p class="c6"><span class="c1">85. Statpak</span></p></td>
       <td class="c57" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$hct_test['statpak_h']}}</span></p></td>
       <td class="c19" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$emtct_test['statpak_p']}}</span></p></td>
-      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['statpak']}}</span></p></td>
+      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['statpak_cd']}}</span></p></td>
       <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$smc_test['statpak_s']}}</span></p></td>
-      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['statpak']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['statpak']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['statpak']}}</span></p></td>
-      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['statpak']}}</span></p></td>
-      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['statpak']}}</span></p></td>
-      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['statpak']}}</span></p></td>
-      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['statpak'] + $iqc_test['statpak'] + $dna_confirmatory_test['statpak'] + $inconclusive_test['statpak'] + $verification_test['statpak'] + $repeat_test['statpak'] + $smc_test['statpak_s'] + $clinical_diagnosis_test['statpak'] + $emtct_test['statpak_p'] + $hct_test['statpak_h']}}</span></p></td>
+      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['statpak_rt']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['statpak_tv']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['statpak_ir']}}</span></p></td>
+      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['statpak_dct']}}</span></p></td>
+      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['statpak_qc']}}</span></p></td>
+      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['statpak_eqa']}}</span></p></td>
+      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['statpak_eqa'] + $iqc_test['statpak_qc'] + $dna_confirmatory_test['statpak_dct'] + $inconclusive_test['statpak_ir'] + $verification_test['statpak_tv'] + $repeat_test['statpak_rt'] + $smc_test['statpak_s'] + $clinical_diagnosis_test['statpak_cd'] + $emtct_test['statpak_p'] + $hct_test['statpak_h']}}</span></p></td>
 </tr>
     <tr class="c17">
       <td class="c64" colspan="1" rowspan="1"><p class="c6"><span class="c1">86. SD Bioline</span></p></td>
       <td class="c57" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$hct_test['sdbioline_h']}}</span></p></td>
       <td class="c19" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$emtct_test['sdbioline_p']}}</span></p></td>
-      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['sdbioline']}}</span></p></td>
+      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['sdbioline_cd']}}</span></p></td>
       <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$smc_test['sdbioline_s']}}</span></p></td>
-      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['sdbioline']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['sdbioline']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['sdbioline']}}</span></p></td>
-      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['sdbioline']}}</span></p></td>
-      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['sdbioline']}}</span></p></td>
-      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['sdbioline']}}</span></p></td>
-      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['sdbioline'] + $iqc_test['sdbioline'] + $dna_confirmatory_test['sdbioline'] + $inconclusive_test['sdbioline'] + $verification_test['sdbioline'] + $repeat_test['sdbioline'] + $smc_test['sdbioline_s'] + $clinical_diagnosis_test['sdbioline'] + $emtct_test['sdbioline_p'] + $hct_test['sdbioline_h']}}</span></p></td>
+      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['sdbioline_rt']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['sdbioline_tv']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['sdbioline_ir']}}</span></p></td>
+      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['sdbioline_dct']}}</span></p></td>
+      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['sdbioline_qc']}}</span></p></td>
+      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['sdbioline_eqa']}}</span></p></td>
+      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['sdbioline_eqa'] + $iqc_test['sdbioline_qc'] + $dna_confirmatory_test['sdbioline_dct'] + $inconclusive_test['sdbioline_ir'] + $verification_test['sdbioline_tv'] + $repeat_test['sdbioline_rt'] + $smc_test['sdbioline_s'] + $clinical_diagnosis_test['sdbioline_cd'] + $emtct_test['sdbioline_p'] + $hct_test['sdbioline_h']}}</span></p></td>
 </tr>
     <tr class="c17">
       <td class="c64" colspan="1" rowspan="1"><p class="c6"><span class="c1">87. HIV hiv_syphilis_duo DUO</span></p></td>
       <td class="c57" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$hct_test['hiv_syphilis_duo_h']}}</span></p></td>
       <td class="c19" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$emtct_test['hiv_syphilis_duo_p']}}</span></p></td>
-      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['hiv_syphilis_duo']}}</span></p></td>
+      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['hiv_syphilis_duo_cd']}}</span></p></td>
       <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$smc_test['hiv_syphilis_duo_s']}}</span></p></td>
-      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['hiv_syphilis_duo']}}</span></p></td>
-      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['hiv_syphilis_duo'] + $iqc_test['hiv_syphilis_duo'] + $dna_confirmatory_test['hiv_syphilis_duo'] + $inconclusive_test['hiv_syphilis_duo'] + $verification_test['hiv_syphilis_duo'] + $repeat_test['hiv_syphilis_duo'] + $smc_test['hiv_syphilis_duo_s'] + $clinical_diagnosis_test['hiv_syphilis_duo'] + $emtct_test['hiv_syphilis_duo_p'] + $hct_test['hiv_syphilis_duo_h']}}</span></p></td>
+      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['hiv_syphilis_duo_rt']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['hiv_syphilis_duo_tv']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['hiv_syphilis_duo_ir']}}</span></p></td>
+      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['hiv_syphilis_duo_dct']}}</span></p></td>
+      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['hiv_syphilis_duo_qc']}}</span></p></td>
+      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['hiv_syphilis_duo_eqa']}}</span></p></td>
+      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['hiv_syphilis_duo_eqa'] + $iqc_test['hiv_syphilis_duo_qc'] + $dna_confirmatory_test['hiv_syphilis_duo_dct'] + $inconclusive_test['hiv_syphilis_duo_ir'] + $verification_test['hiv_syphilis_duo_tv'] + $repeat_test['hiv_syphilis_duo_rt'] + $smc_test['hiv_syphilis_duo_s'] + $clinical_diagnosis_test['hiv_syphilis_duo_cd'] + $emtct_test['hiv_syphilis_duo_p'] + $hct_test['hiv_syphilis_duo_h']}}</span></p></td>
 </tr>
     <tr class="c17">
       <td class="c64" colspan="1" rowspan="1"><p class="c6"><span class="c1">88. Oraquick (Self Testing)</span></p></td>
       <td class="c57" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$hct_test['oraquick_h']}}</span></p></td>
       <td class="c19" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$emtct_test['oraquick_p']}}</span></p></td>
-      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['oraquick']}}</span></p></td>
+      <td class="c109" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$clinical_diagnosis_test['oraquick_cd']}}</span></p></td>
       <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$smc_test['oraquick_s']}}</span></p></td>
-      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['oraquick']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['oraquick']}}</span></p></td>
-      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['oraquick']}}</span></p></td>
-      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['oraquick']}}</span></p></td>
-      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['oraquick']}}</span></p></td>
-      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['oraquick']}}</span></p></td>
-      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['oraquick'] + $iqc_test['oraquick'] + $dna_confirmatory_test['oraquick'] + $inconclusive_test['oraquick'] + $verification_test['oraquick'] + $repeat_test['oraquick'] + $smc_test['oraquick_s'] + $clinical_diagnosis_test['oraquick'] + $emtct_test['oraquick_p'] + $hct_test['oraquick_h']}}</span></p></td>
+      <td class="c94" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$repeat_test['oraquick_rt']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$verification_test['oraquick_tv']}}</span></p></td>
+      <td class="c27" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$inconclusive_test['oraquick_ir']}}</span></p></td>
+      <td class="c58" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$dna_confirmatory_test['oraquick_dct']}}</span></p></td>
+      <td class="c121" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$iqc_test['oraquick_qc']}}</span></p></td>
+      <td class="c3" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['oraquick_eqa']}}</span></p></td>
+      <td class="c72" colspan="1" rowspan="1"><p class="c0"><span class="c1">{{$eqa_test['oraquick_eqa'] + $iqc_test['oraquick_qc'] + $dna_confirmatory_test['oraquick_dct'] + $inconclusive_test['oraquick_ir'] + $verification_test['oraquick_tv'] + $repeat_test['oraquick_rt'] + $smc_test['oraquick_s'] + $clinical_diagnosis_test['oraquick_cd'] + $emtct_test['oraquick_p'] + $hct_test['oraquick_h']}}</span></p></td>
 </tr>
   </tbody>
 </table>

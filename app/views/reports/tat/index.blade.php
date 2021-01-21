@@ -87,6 +87,8 @@
 					   <tr>
 					    	<th>{{Lang::choice('messages.test-type',1)}}</th>
 					    	<th>{{trans('messages.total-specimen')}}</th>
+					    	<th>Expected TAT</th>
+					    	<th>Actual TAT</th>
 					    	<th>Within TAT</th>
 					    	<th>Beyond TAT</th>
 					    	<th>{{trans('messages.tat-rates-label')}} Within</th>
@@ -96,6 +98,8 @@
 					    <tr>
 					    	<td>{{$datum->name}}</td>
 			  				<td>{{$datum->total}}</td>
+			  				<td>{{$datum->ETAT}}</td>
+			  				<td>{{$datum->avgtime}}</td>
 			  				<td>{{$datum->Within}}</td>
 			  				<td>{{$datum->Beyond}}</td>
 			  				<td>{{round($datum->Within / $datum->total * 100, 2)}}</td>

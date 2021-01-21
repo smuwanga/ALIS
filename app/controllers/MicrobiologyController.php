@@ -30,10 +30,14 @@ class MicrobiologyController extends \BaseController {
 		$ulinFormat = AdhocConfig::where('name','ULIN')->first()->getULINFormat();
 		$facilities = ['Select facility']+Facility::where('active', '=', 1)->lists('name', 'id');
 		// Test Category
-		$categories = ['Select Lab Section']+TestCategory::lists('name', 'id');
+		$categories = ['Select Lab Section']+TestCategory::where('test_categories.id', '=', 2)->lists('name', 'id');
 		$testpurpose = ['Select Test Purpose']+UnhlsPurpose::orderBy('name', 'ASC')->lists('name', 'id');
+		$nation = ['0' => 'National', '1' => 'Refugee', '2' => 'Foreigner'];
+		$visitType = ['0' => 'Out-patient', '1' => 'In-patient', '2' => 'Referral'];
 		return View::make('microbio.create')
 					->with('ward', $wards)
+					->with('nation', $nation)
+					->with('visitType', $visitType)
 					->with('receptionDate', $receptionDate)
 					->with('collectionDate', $collectionDate)
 					->with('antibiotics', $antibiotics)
@@ -58,7 +62,9 @@ class MicrobiologyController extends \BaseController {
 			'patient_name' => 'required',
 			'gender' => 'required',
 			'dob' => 'required' ,
-			'nationality' => 'required' ,
+			'nationality' => 'required',
+			'patient_number' => 'required',
+			'specimen_type' => 'required',
 		);
 		$validator = Validator::make(Input::all(), $rules);
 
@@ -72,7 +78,7 @@ class MicrobiologyController extends \BaseController {
 			$nation = ['0' => 'National', '1' => 'Refugee', '2' => 'Foreigner'];
 			// store
 			$patient = new UnhlsPatient;
-			//$patient->patient_number = Input::get('patient_number');
+			$patient->patient_number = Input::get('patient_number');
 			$patient->nin = Input::get('nin');
 			$patient->name = Input::get('patient_name');
 			$patient->gender = Input::get('gender');
@@ -82,6 +88,7 @@ class MicrobiologyController extends \BaseController {
 			$patient->village_workplace = Input::get('village_workplace');
 			$patient->district_residence = Input::get('district_residence');
 			$patient->district_workplace = Input::get('district_workplace');
+			$patient->admission_date = Input::get('admission_date');
 			//$patient->occupation = Input::get('occupation');
 			//$patient->email = Input::get('email');
 			//$patient->address = Input::get('address');
@@ -103,19 +110,11 @@ class MicrobiologyController extends \BaseController {
 			$patientdetail->patient_id = $patient->id;
 			$patientdetail->requested_by = Input::get('requested_by');
 			$patientdetail->clinician_contact = Input::get('phone_contact');
-			//$patientdetail->village_residence = Input::get('village_residence');
-			//patientdetail->village_workplace = Input::get('village_workplace');
-			//$patientdetail->occupation = Input::get('occupation');
-			//$patientdetail->email = Input::get('email');
-			//$patientdetail->address = Input::get('address');
-			//$patientdetail->phone_number = Input::get('phone_number');
-			//$patientdetail->patientid = Input::get('patientid');
 			$patientdetail->sub_county_residence = Input::get('sub_county_residence');			
 			$patientdetail->sub_county_workplace = Input::get('sub_county_workplace');			
 			$patientdetail->name_next_kin = Input::get('name_next_kin');
 			$patientdetail->contact_next_kin = Input::get('contact_next_kin');
 			$patientdetail->residence_next_kin = Input::get('residence_next_kin');
-			$patientdetail->admission_date = Input::get('admission_date');
 			$patientdetail->transfered = Input::get('transfered');
 			$patientdetail->facility_transfered = Input::get('facility_transfered');
 			$patientdetail->clinical_notes = Input::get('clinical_notes');
@@ -124,7 +123,7 @@ class MicrobiologyController extends \BaseController {
 			
 			$patientdetail->save();
 
-			$visitType = ['Out-patient','In-patient', 'Referral'];
+			
 			$activeTest = array();
 
 			// On antibiotics --- Lists all antibiotics
@@ -140,6 +139,8 @@ class MicrobiologyController extends \BaseController {
 				}
 			}
 
+			$visitType = ['0' => 'Out-patient', '1' => 'In-patient', '2' => 'Referral'];
+
 			/*
 			 * - Create a visit
 			 * - Fields required: visit_type, patient_id
@@ -147,7 +148,7 @@ class MicrobiologyController extends \BaseController {
 			$visit = new UnhlsVisit;
 			$visit->patient_id = $patient->id;
 			$visit->visit_type = $visitType[Input::get('visit_type')];
-			$visit->ward_id = Input::get('ward_id');
+			$visit->ward_id = Input::get('ward');
 			$visit->bed_no = Input::get('bed_no');
 			$visit->facility_id = Input::get('facility');
 			$visit->facility_lab_number = Input::get('facility_lab_number');
@@ -231,12 +232,14 @@ class MicrobiologyController extends \BaseController {
 		$categories = ['Select Lab Section']+TestCategory::lists('name', 'id');
 		$testpurpose = ['Select Test Purpose']+UnhlsPurpose::orderBy('name', 'ASC')->lists('name', 'id');
 		$patientAntibiotics = PatientAntibiotics::where('patient_id', $patient->id)->lists('drug_id');
+		$nation = ['0' => 'National', '1' => 'Refugee', '2' => 'Foreigner'];
 		$visits = UnhlsVisit::find($id);
 		//dd($patientAntibiotics);
 		return View::make('microbio.edit')
 					->with('patient', $patient)
 					->with('ward', $wards)
 					->with('visits', $visits)
+					->with('nation', $nation)
 					->with('receptionDate', $receptionDate)
 					->with('collectionDate', $collectionDate)
 					->with('antibiotics', $antibiotics)
@@ -263,7 +266,8 @@ class MicrobiologyController extends \BaseController {
 			'patient_name' => 'required',
 			'gender' => 'required',
 			'dob' => 'required' ,
-			'nationality' => 'required' ,
+			'nationality' => 'required',
+			'patient_number' => 'required',
 		);
 		$validator = Validator::make(Input::all(), $rules);
 
@@ -277,7 +281,7 @@ class MicrobiologyController extends \BaseController {
 			$nation = ['0' => 'National', '1' => 'Refugee', '2' => 'Foreigner'];
 			// store
 			$patient = UnhlsPatient::find($id);
-			//$patient->patient_number = Input::get('patient_number');
+			$patient->patient_number = Input::get('patient_number');
 			$patient->nin = Input::get('nin');
 			$patient->name = Input::get('patient_name');
 			$patient->gender = Input::get('gender');
@@ -285,6 +289,9 @@ class MicrobiologyController extends \BaseController {
 			$patient->dob = Input::get('dob');
 			$patient->village_residence = Input::get('village_residence');
 			$patient->village_workplace = Input::get('village_workplace');
+			$patient->district_residence = Input::get('district_residence');
+			$patient->district_workplace = Input::get('district_workplace');
+			$patient->admission_date = Input::get('admission_date');
 			//$patient->occupation = Input::get('occupation');
 			//$patient->email = Input::get('email');
 			//$patient->address = Input::get('address');
@@ -302,32 +309,23 @@ class MicrobiologyController extends \BaseController {
 				$uuid = new UuidGenerator; 
 				$uuid->save();
 
-			$patientdetail = MicroPatientDetail::find($id);
-			$patientdetail->patient_id = $patient->id;
-			$patientdetail->requested_by = Input::get('requested_by');
-			$patientdetail->clinician_contact = Input::get('phone_contact');
-			//$patientdetail->village_residence = Input::get('village_residence');
-			//patientdetail->village_workplace = Input::get('village_workplace');
-			//$patientdetail->occupation = Input::get('occupation');
-			//$patientdetail->email = Input::get('email');
-			//$patientdetail->address = Input::get('address');
-			//$patientdetail->phone_number = Input::get('phone_number');
-			//$patientdetail->patientid = Input::get('patientid');
-			$patientdetail->sub_county_residence = Input::get('sub_county_residence');
-			$patientdetail->district_residence = Input::get('district_residence');
-			$patientdetail->sub_county_workplace = Input::get('sub_county_workplace');
-			$patientdetail->district_workplace = Input::get('district_workplace');
-			$patientdetail->name_next_kin = Input::get('name_next_kin');
-			$patientdetail->contact_next_kin = Input::get('contact_next_kin');
-			$patientdetail->residence_next_kin = Input::get('residence_next_kin');
-			$patientdetail->admission_date = Input::get('admission_date');
-			$patientdetail->transfered = Input::get('transfered');
-			$patientdetail->facility_transfered = Input::get('facility_transfered');
-			$patientdetail->clinical_notes = Input::get('clinical_notes');
-			//$patientdetail->ward = Input::get('ward');
-			$patientdetail->days_on_antibiotic = Input::get('antibiotic_days');
+			// $patientdetail = MicroPatientDetail::find($id);
+			// $patientdetail->patient_id = $patient->id;
+			// $patientdetail->requested_by = Input::get('requested_by');
+			// $patientdetail->clinician_contact = Input::get('phone_contact');
+			// $patientdetail->sub_county_residence = Input::get('sub_county_residence');			
+			// $patientdetail->sub_county_workplace = Input::get('sub_county_workplace');			
+			// $patientdetail->name_next_kin = Input::get('name_next_kin');
+			// $patientdetail->contact_next_kin = Input::get('contact_next_kin');
+			// $patientdetail->residence_next_kin = Input::get('residence_next_kin');
+			// $patientdetail->transfered = Input::get('transfered');
+			// $patientdetail->facility_transfered = Input::get('facility_transfered');
+			// $patientdetail->clinical_notes = Input::get('clinical_notes');
+			// //$patientdetail->ward = Input::get('ward');
+			// $patientdetail->days_on_antibiotic = Input::get('antibiotic_days');
 			
-			$patientdetail->save();
+			
+			// $patientdetail->save();
 
 			$visitType = ['Out-patient','In-patient', 'Referral'];
 			$activeTest = array();
@@ -352,9 +350,9 @@ class MicrobiologyController extends \BaseController {
 			$visit = UnhlsVisit::find($id);
 			$visit->patient_id = $patient->id;
 			$visit->visit_type = $visitType[Input::get('visit_type')];
-			$visit->ward_id = Input::get('ward_id');
+			$visit->ward_id = Input::get('ward');
 			$visit->bed_no = Input::get('bed_no');
-			$visit->facility_id = Input::get('facility');
+			//$visit->facility_id = Input::get('facility');
 			$visit->facility_lab_number = Input::get('facility_lab_number');
 			$visit->hospitalized = Input::get('hospitalized');
 			$visit->on_antibiotics = Input::get('onAntibiotics');
@@ -385,7 +383,7 @@ class MicrobiologyController extends \BaseController {
                         $test->test_status_id = UnhlsTest::PENDING;
                         $test->created_by = Auth::user()->id;
                         //$test->requested_by = Input::get('clinician');
-                        //$test->purpose = Input::get('hiv_purpose');
+                        $test->purpose = Input::get('testpurpose');
                         $test->save();
 
                         $activeTest[] = $test->id;

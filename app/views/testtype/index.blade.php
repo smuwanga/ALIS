@@ -25,6 +25,7 @@
 			<thead>
 				<tr>
 					<th>{{ Lang::choice('messages.name',1) }}</th>
+					<th>Standard Name</th>
 					<th>{{trans('messages.description')}}</th>
 					<th>{{trans('messages.target-turnaround-time')}}</th>
 					<th>{{trans('messages.prevalence-threshold')}}</th>
@@ -38,6 +39,7 @@
                         @endif
                         >
 					<td>{{ $value->name }}</td>
+					<td>{{ !is_null($value->parentId) ? $value->standardnamemapping->standard_name:'' }}</td>
 					<td>{{ $value->description }}</td>
 					<td>{{ $value->targetTAT }} {{$value->targetTAT_unit}}</td>
 					<td>{{ $value->prevalence_threshold }}</td>

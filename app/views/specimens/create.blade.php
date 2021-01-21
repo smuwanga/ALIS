@@ -249,7 +249,7 @@
 									</div>
 									<div class ="form-group hidden hiv-purpose col-md-12">
 										{{Form::label('hiv_purpose', 'Please select the purpose of HIV test', array('class' => 'required'))}}
-										{{Form::select('hiv_purpose',['' => '----Select purpose of H.I.V----', 'pmtct' => 'PMTCT', 'hct' => 'HCT', 'smc' => 'SMC', 'qc' => 'Quality Control', 'clinical_diagnosis' => 'Clinical Diagnosis'])}}
+										{{Form::select('hiv_purpose',['' => '----Select purpose of H.I.V----', 'pmtct' => 'PMTCT', 'hct' => 'HCT', 'smc' => 'SMC', 'qc' => 'Quality Control', 'clinical_diagnosis' => 'Clinical Diagnosis', 'repeat_test' => 'Repeat test', 'test_for_verification' => 'Test for verification', 'inconclusive_result' => 'Inconclusive Result', 'dna_confirmed_test' => 'DNA confirmed Test', 'eqa' => 'EQA'])}}
 									</div>
 									</div>
 								</div>

@@ -15,35 +15,40 @@ class CreatePocTables extends Migration {
 		Schema::create('poc_tables', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('facility_id');
-			$table->integer('district_id');
-			$table->string('gender');
-			$table->float('age');
-			$table->string('exp_no');
-			$table->string('provisional_diagnosis');
-			$table->string('caretaker_number');
-			$table->string('entry_point');
-			$table->string('mother_name');
-			$table->string('infant_name');
-			$table->string('breastfeeding_status');
-			$table->string('mother_hiv_status');
-			$table->date('collection_date');
-			$table->string('pcr_level');
-			$table->string('created_by');
-			$table->string('pmtct_antenatal');
-			$table->string('pmtct_delivery');
-			$table->string('pmtct_postnatal');
-			$table->date('admission_date');
-			$table->string('sample_id');
-			$table->string('infant_pmtctarv');
-			$table->string('mother_pmtctarv');
-			$table->string('other_entry_point');
+			$table->string('infant_name')->nullable();
+			$table->string('exp_no')->nullable();
+			$table->float('age')->nullable();
+			$table->string('gender')->nullable();
+			$table->string('caretaker_number')->nullable();
+			$table->string('contrimoxazole')->nullable();
+			$table->string('delivery_details')->nullable();
+			$table->string('infant_pmtctarv')->nullable();
+			$table->string('entry_point')->nullable();
+			$table->string('other_entry_point')->nullable();
+			$table->date('collection_date')->nullable();
+			$table->string('sample_id')->nullable();
+			$table->string('pcr_level')->nullable();
+			$table->string('non_routine')->nullable();
+			$table->string('feeding_status')->nullable();
+			$table->string('mother_hts')->nullable();
+			$table->string('mother_art')->nullable();
+			$table->string('mother_nin')->nullable();
+			$table->string('pmtct_antenatal')->nullable();
+			$table->string('pmtct_delivery')->nullable();
+			$table->string('pmtct_postnatal')->nullable();
+			$table->string('created_by')->nullable();
+			$table->date('admission_date')->nullable();
+			$table->string('breastfeeding_status')->nullable();
+			$table->string('mother_name')->nullable();
+			$table->string('mother_hiv_status')->nullable();
+			$table->string('provisional_diagnosis')->nullable();
+			$table->string('mother_pmtctarv')->nullable();
+			$table->integer('facility_id')->nullable();
+			$table->integer('district_id')->nullable();
 			$table->softDeletes();
 			$table->timestamps();
 		});
 	}
-
-
 	/**
 	* Reverse the migrations.
 	*
@@ -51,7 +56,7 @@ class CreatePocTables extends Migration {
 	*/
 	public function down()
 	{
-		Schema::drop('poc_tables');	
+		Schema::drop('poc_tables')->nullable();
 	}
 
 }

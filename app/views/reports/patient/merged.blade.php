@@ -20,7 +20,7 @@
 		  <li class="active">{{ Lang::choice('messages.report', 2) }}</li>
 		</ol>
 	</div>
-	{{ Form::open(array('route' => array('reports.patient.index'), 'class'=>'form-inline', 'role'=>'form', 'method'=>'POST')) }}
+	{{ Form::open(array('route' => array('reports.patient.merged'), 'class'=>'form-inline', 'role'=>'form', 'method'=>'POST')) }}
 		<div class="form-group">
 
 		    {{ Form::label('search', "search", array('class' => 'sr-only')) }}
@@ -42,7 +42,7 @@
 	    @if(Session::has('message'))
 			<div class="alert alert-info">{{ trans(Session::get('message')) }}</div>
 		@endif
-	    <table id="patients_table" class="table table-striped table-hover table-condensed">
+	    <table class="table table-striped table-hover table-condensed">
 			<thead>
 				<tr>
 					<th class="hide">#</th>
@@ -80,22 +80,19 @@
 					<td>
 					<!-- show the patient report(uses the show method found at GET /patient/{id} -->
 					
-						@if($visit->is_printed == 0)
-						<a class="btn btn-sm btn-warning view-visit" href="{{ URL::to('print/' . $visit->id) }}">
-                                        <span class="glyphicon glyphicon-play"></span>
-                                        {{trans('messages.view-report')}}
-                                    </a>
-
-                             
+					@if($visit->is_printed == 0)
+					<a class="btn btn-sm btn-warning view-visit" href="{{ URL::to('print/' . $visit->id) }}">
+                        <span class="glyphicon glyphicon-play"></span>
+                        {{trans('messages.view-report')}}
+                    </a>                           
 					@else
-						<a class="btn btn-sm btn-default" href="{{ URL::to('patientvisitreport/' . $visit->id) }}" >
+						<a class="btn btn-sm btn-default" href="{{ URL::to('patientvisitreport/' . $visit->id) }}" target="_blank" >
 							<span class="glyphicon glyphicon-eye-open"></span>
 							Result
 						</a>
-					@endif
-					
+					@endif				
 					</td>
-					<td><a class="btn btn-sm btn-info" href="{{ URL::to('patientrequestform/' . $visit->id) }}" >
+					<td><a class="btn btn-sm btn-info" href="{{ URL::to('patientrequestform/' . $visit->id) }}" target="_blank" >
 								<span class="glyphicon glyphicon-eye-open"></span>
 								Request Form
 							</a></td>
@@ -108,7 +105,7 @@
 			@endforelse
 			</tbody>
 		</table>
-		
+		{{$visits->links()}}
 	</div>
 
 </div>
